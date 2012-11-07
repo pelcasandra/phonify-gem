@@ -81,13 +81,13 @@ Creating a new subscription is very easy too.
 
 ### Extending Models
 
-Phonify can be extended to your application models using any Message, Phone or Subscription resource. You can use `extend Phonify :resource`.
+Phonify can be extended to your application models using any Message, Phone or Subscription resource. You can use `has_phonify :resource`.
 
-The following example will relate your User object with a Phonify subscription. 
+The following example will relate your User object with Phonify subscriptions and messages. 
 
-  class User < ActiveRecord::Base
-    has_phonify :subscriptions, :messages
-  end
+    class User < ActiveRecord::Base
+      has_phonify :subscriptions, :messages
+    end
 
 Requesting all messages and subscriptions from any user
 
