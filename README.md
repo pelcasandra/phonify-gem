@@ -24,7 +24,37 @@ Place the following code at the end of `config/application.rb`
 
 Run generator to create local Phonify tables
 
-    rake generate phonify
+    rails generate phonify
+    
+This will generate a migration file to cache Phonify results for better performance. 
+
+    create_table :messages do |t|
+      t.references :origin
+      t.references :destination
+      t.references :campaign
+      t.text       :message
+      t.boolean    :delivered, default: false
+      t.integer    :amount
+      t.string     :currency
+      t.datetime   :schedule_at
+      t.timestamps
+    end
+
+    create_table :subscriptions do |t|
+      t.references :origin
+      t.references :destination
+      t.string     :pin
+      t.boolean    :active, default: false
+      t.timestamps
+    end
+
+    create_table :phones do |t|
+      t.references :campaign
+      t.references :carrier
+      t.string     :number
+      t.string     :country
+      t.timestamps
+    end
 
 Run migrations
     
@@ -34,17 +64,20 @@ Run migrations
 
 ### Simple Usage
 
-Send a message
+Sending a message is very simple
 
     Phonify::Message.new("646854345", "test message")
+    => #<Message id: "KW9Aqn84ijagK6zseB5N", message: "test message", origin_phone: "7227", destination_phone: "646854345", delivered: false, campaign_id: nil, schedule_at: nil, created_at: "2012-11-05 18:54:15", updated_at: "2012-11-05 18:54:15">
 
 Find a message
 
     Phonify::Message.find("KW9Aqn84ijagK6zseB5N")
+    => #<Message id: "KW9Aqn84ijagK6zseB5N", message: "test message", origin_phone: "7227", destination_phone: "646854345", delivered: false, campaign_id: nil, schedule_at: nil, created_at: "2012-11-05 18:54:15", updated_at: "2012-11-05 18:54:15">
 
-Creating a new subscription is very simple. 
+Creating a new subscription is very easy too. 
 
-    Phonify::Subscription.new("646854345")
+    Phonify::Subscription.new("646854345","7117")
+    => #<Subscription id: "ZNmtqyEcNPpAL8s4qxJv", origin_phone: "646854345", destination_phone: "7117", active: false, campaign_id: nil, created_at: "2012-11-05 18:54:15", updated_at: "2012-11-05 18:54:15">
 
 ### Extending Models
 
@@ -52,8 +85,9 @@ Phonify can be extended to your application models using any Message, Phone or S
 
 The following example will relate your User object with a Phonify subscription. 
 
-    # user.rb
-    extend Phonify :subscription
+  class User < ActiveRecord::Base
+    has_phonify :subscriptions, :messages
+  end
 
 Requesting all messages and subscriptions from any user
 
