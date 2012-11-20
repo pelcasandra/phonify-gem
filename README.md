@@ -26,34 +26,32 @@ Run generator to create local Phonify tables
 
     rails generate phonify
     
-This will generate a migration file to cache Phonify results for better performance. 
+This will generate a migration file to store the necessary local references.
 
-    create_table :messages do |t|
-      t.references :origin
-      t.references :destination
-      t.references :campaign
-      t.text       :message
-      t.boolean    :delivered, default: false
-      t.integer    :amount
-      t.string     :currency
-      t.datetime   :schedule_at
-      t.timestamps
+    create_table :phonify_phones do |t|
+      t.references :owner, polymorphic: true
+      t.string :token
     end
 
-    create_table :subscriptions do |t|
-      t.references :origin
-      t.references :destination
-      t.string     :pin
-      t.boolean    :active, default: false
-      t.timestamps
+    create_table :phonify_messages do |t|
+      t.references :owner, polymorphic: true
+      t.string :token
     end
 
-    create_table :phones do |t|
-      t.references :campaign
-      t.references :carrier
-      t.string     :number
-      t.string     :country
-      t.timestamps
+    create_table :phonify_subscriptions do |t|
+      t.references :owner, polymorphic: true
+      t.string :token
+    end
+
+As well as ActiveRecord models which you can customize (all of the logic is already encapsulated in the super class)
+
+    class Phone < Phonify::Phone
+    end
+
+    class Message < Phonify::Message
+    end
+
+    class Subscription < Phonify::Subscription
     end
 
 Run migrations
@@ -86,7 +84,8 @@ Phonify can be extended to your application models using any Message, Phone or S
 The following example will relate your User object with Phonify subscriptions and messages. 
 
     class User < ActiveRecord::Base
-      has_phonify :subscriptions, :messages
+      has_many :subscriptions
+      has_many :messages
     end
 
 Requesting all messages and subscriptions from any user
