@@ -25,6 +25,9 @@ module Phonify::Base
     def api_name
       self.name.split(':').last.downcase
     end
+    def api
+      Phonify::Api.instance
+    end
   end
 
   def api
