@@ -26,32 +26,35 @@ describe Phonify::Api do
     end
     describe '#phone' do
       it 'should call /v1/phones/{PHONE_ID}' do
-        attrs = { phone_id: "phone#{rand(999)}" }
+        phone_id = "phone#{rand(999)}"
         @http.should_receive(:request) do |req|
           req.method.should == 'GET'
-          req.path.should == "/v1/phones/" + CGI.escape(attrs[:phone_id])
+          req.path.should == "/v1/phones/" + CGI.escape(phone_id)
+          req['authorization'].should == nil
           response200
         end
-        Phonify::Api.instance.phone(attrs)
+        Phonify::Api.instance.phone(phone_id)
       end
     end
     describe '#subscription' do
       it 'should call /v1/subscriptions/{PHONE_ID}' do
-        attrs = { subscription_id: "subscription#{rand(999)}" }
+        subscription_id = "subscription#{rand(999)}"
         @http.should_receive(:request) do |req|
           req.method.should == 'GET'
-          req.path.should == "/v1/subscriptions/" + CGI.escape(attrs[:subscription_id])
+          req.path.should == "/v1/subscriptions/" + CGI.escape(subscription_id)
+          req['authorization'].should == nil
           response200
         end
-        Phonify::Api.instance.subscription(attrs)
+        Phonify::Api.instance.subscription(subscription_id)
       end
     end
     describe '#message' do
       it 'should call /v1/messages/{PHONE_ID}' do
-        attrs = { message_id: "message#{rand(999)}" }
+        message_id = "message#{rand(999)}"
         @http.should_receive(:request) do |req|
           req.method.should == 'GET'
-          req.path.should == "/v1/messages/" + CGI.escape(attrs[:message_id])
+          req.path.should == "/v1/messages/" + CGI.escape(message_id)
+          req['authorization'].should == nil
           response200
         end
         Phonify::Api.instance.message(attrs)

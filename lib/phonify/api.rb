@@ -15,16 +15,16 @@ class Phonify::Api
     json_for request("/v1/campaigns/#{CGI.escape(params[:campaign_id])}/messages", params.except(:campaign_id), Net::HTTP::Post)
   end
 
-  def phone(params)
-    json_for request("/v1/phones/#{CGI.escape(params[:phone_id])}", params.except(:phone_id))
+  def phone(phone_id)
+    json_for request("/v1/phones/#{CGI.escape(phone_id)}")
   end
 
-  def subscription(params)
-    json_for request("/v1/subscriptions/#{CGI.escape(params[:subscription_id])}", params.except(:subscription_id))
+  def subscription(subscription_id)
+    json_for request("/v1/subscriptions/#{CGI.escape(subscription_id)}")
   end
 
-  def message(params)
-    json_for request("/v1/messages/#{CGI.escape(params[:message_id])}", params.except(:message_id))
+  def message(message_id)
+    json_for request("/v1/messages/#{CGI.escape(message_id)}")
   end
 
   def request(url, params = {}, klass = Net::HTTP::Get, pem_filecontent = nil)
