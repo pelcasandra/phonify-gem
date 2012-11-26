@@ -6,7 +6,7 @@ describe Phonify::Base do
     before(:each) do
       @api = mock "Phonify::Api"
       @api.stub!(:phone).and_return(phonify_phone_attrs)
-      Phonify::Api.stub!(:new).and_return(@api)
+      Phonify::Api.stub!(:instance).and_return(@api)
     end
     describe 'remote attributes' do
       let(:phone) { Phonify::Phone.find( FactoryGirl.create(:phone, phonify_phone_attrs).id ) }
@@ -80,7 +80,7 @@ describe Phonify::Base do
     before(:each) do
       @api = mock "Phonify::Api"
       @api.stub!(:message).and_return(phonify_message_attrs)
-      Phonify::Api.stub!(:new).and_return(@api)
+      Phonify::Api.stub!(:instance).and_return(@api)
     end
     describe 'remote attributes' do
       let(:message) { Phonify::Message.find( FactoryGirl.create(:message, phonify_message_attrs).id ) }
@@ -151,7 +151,7 @@ describe Phonify::Base do
     before(:each) do
       @api = mock "Phonify::Api"
       @api.stub!(:subscription).and_return(phonify_subscription_attrs)
-      Phonify::Api.stub!(:new).and_return(@api)
+      Phonify::Api.stub!(:instance).and_return(@api)
     end
     describe 'remote attributes' do
       let(:subscription) { Phonify::Subscription.find( FactoryGirl.create(:subscription, phonify_subscription_attrs).id ) }

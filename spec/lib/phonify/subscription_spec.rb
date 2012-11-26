@@ -22,6 +22,6 @@ describe Phonify::Subscription do
   before(:each) do
     @api = mock "Phonify::Api"
     @api.stub!(:subscription).and_return(phonify_subscription_attrs)
-    Phonify::Api.stub!(:new).and_return(@api)
+    Phonify::Api.stub!(:instance).and_return(@api)
   end
 end

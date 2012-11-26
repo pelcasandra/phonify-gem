@@ -28,6 +28,6 @@ module Phonify::Base
   end
 
   def api
-    @api ||= Phonify::Api.new
+    Phonify::Api.instance
   end
 end
