@@ -12,23 +12,23 @@ class Phonify::Api
   end
 
   def broadcast(params)
-    request("/v1/campaigns/#{CGI.escape(params[:campaign_id])}/messages", params.except(:campaign_id), Net::HTTP::Post)
+    json_for request("/v1/campaigns/#{CGI.escape(params[:campaign_id])}/messages", params.except(:campaign_id), Net::HTTP::Post)
   end
 
   def phone(params)
-    request("/v1/phones/#{CGI.escape(params[:phone_id])}", params.except(:phone_id))
+    json_for request("/v1/phones/#{CGI.escape(params[:phone_id])}", params.except(:phone_id))
   end
 
   def subscription(params)
-    request("/v1/subscriptions/#{CGI.escape(params[:subscription_id])}", params.except(:subscription_id))
+    json_for request("/v1/subscriptions/#{CGI.escape(params[:subscription_id])}", params.except(:subscription_id))
   end
 
   def message(params)
-    request("/v1/messages/#{CGI.escape(params[:message_id])}", params.except(:message_id))
+    json_for request("/v1/messages/#{CGI.escape(params[:message_id])}", params.except(:message_id))
   end
 
   def request(url, params = {}, klass = Net::HTTP::Get, pem_filecontent = nil)
-    uri = uri.kind_of?(URI::Generic) ? url : URI.parse(base_url + url)
+    uri = uri.kind_of?(URI::Generic) ? url : URI.join(base_url, url)
     http = Net::HTTP.new(uri.host, uri.port)
     if uri.scheme == 'https'
       http.use_ssl = true
@@ -44,4 +44,15 @@ class Phonify::Api
     request.set_form_data(params.stringify_keys) unless params.blank?
     http.request(request)
   end
+
+  def json_for(response)
+    if response.code =~ /^2/
+      JSON.parse(response.body)
+    elsif response['location']
+      json_for request(response['location'])
+    else
+      { error: response.code, reason: response.body }
+    end
+  end
+
 end
