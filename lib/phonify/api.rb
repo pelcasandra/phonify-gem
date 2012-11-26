@@ -5,10 +5,11 @@ require 'cgi'
 
 class Phonify::Api
   include Singleton
-  attr_accessor :base_url
+  attr_accessor :base_url, :api_key
 
   def initialize
     @base_url = ENV['PHONIFY_API_BASE_URL'] || "https://api.phonify.io"
+    @api_key  = ENV['PHONIFY_API_KEY']
   end
 
   def broadcast(params)
@@ -41,13 +42,16 @@ class Phonify::Api
       end
     end
     request = klass.new(uri.request_uri)
+    request.basic_auth(api_key, '') if api_key.present?
     request.set_form_data(params.stringify_keys) unless params.blank?
     http.request(request)
   end
 
   def json_for(response)
     if response.code =~ /^2/
-      JSON.parse(response.body)
+      JSON.parse(response.body).tap do |n|
+        n.symbolize_keys! if n.respond_to?(:symbolize_keys!)
+      end
     elsif response['location']
       json_for request(response['location'])
     else

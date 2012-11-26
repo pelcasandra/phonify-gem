@@ -19,6 +19,7 @@ describe Phonify::Api do
         @http.should_receive(:request) do |req|
           req.method.should == 'POST'
           req.path.should == "/v1/campaigns/" + CGI.escape(attrs[:campaign_id]) + "/messages"
+          req['authorization'].should == nil
           response200
         end
         Phonify::Api.instance.broadcast(attrs)
@@ -57,7 +58,16 @@ describe Phonify::Api do
           req['authorization'].should == nil
           response200
         end
-        Phonify::Api.instance.message(attrs)
+        Phonify::Api.instance.message(message_id)
+      end
+      it 'should set basic_auth when api_key is present' do
+        message_id = "message#{rand(999)}"
+        Phonify::Api.instance.stub!(:api_key).and_return('api_key')
+        @http.should_receive(:request) do |req|
+          req['authorization'].should == req.send(:basic_encode, 'api_key', '')
+          response200
+        end
+        Phonify::Api.instance.message(message_id)
       end
     end
   end
