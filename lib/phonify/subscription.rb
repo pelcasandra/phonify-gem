@@ -33,4 +33,9 @@ class Phonify::Subscription < ActiveRecord::Base
     end
   end
 
+  def messages(scope = Phonify::Message)
+    return Phonify::Message.where(subscription_id: self.id) if scope == :local
+    self.phone.messages(scope.where(subscription_id: self.id))
+  end
+
 end
