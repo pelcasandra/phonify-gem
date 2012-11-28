@@ -71,6 +71,7 @@ class Phonify::Api
 
   def request(url, params = {}, klass = Net::HTTP::Get, pem_filecontent = nil)
     uri = uri.kind_of?(URI::Generic) ? url : URI.join(base_url, url)
+    uri.query = [uri.query, params2query(params)].reject(&:blank?).join('&') if klass == Net::HTTP::Get unless params.blank?
     http = Net::HTTP.new(uri.host, uri.port)
     if uri.scheme == 'https'
       http.use_ssl = true
@@ -84,15 +85,16 @@ class Phonify::Api
     end
     request = klass.new(uri.request_uri)
     request.basic_auth(api_key, '') if api_key.present?
-    request.set_form_data(params.stringify_keys) unless params.blank?
+    if klass != Net::HTTP::Get
+      request.content_type = 'application/x-www-form-urlencoded'
+      request.body = params2query(params)
+    end unless params.blank?
     http.request(request)
   end
 
   def json_for(response)
     if response.code =~ /^2/
-      JSON.parse(response.body).tap do |n|
-        n.symbolize_keys! if n.respond_to?(:symbolize_keys!)
-      end
+      deep_symbolize_keys! JSON.parse(response.body)
     elsif response['location']
       json_for request(response['location'])
     else
