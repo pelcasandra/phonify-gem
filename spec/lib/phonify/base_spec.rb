@@ -122,7 +122,7 @@ describe Phonify::Base do
       @api = mock "Phonify::Api"
       @api.stub!(:subscription).and_return(phonify_subscription_attrs)
       @api.stub!(:subscriptions).and_return([])
-      @api.stub!(:create_subscription) {|params| phonify_subscription_attrs.merge(params)}
+      @api.stub!(:create_subscription) {|params| [phonify_subscription_attrs.merge(params)]}
       Phonify::Api.stub!(:instance).and_return(@api)
     end
     describe 'remote attributes' do

@@ -18,7 +18,7 @@ module Phonify::Base
       end
       base.send(:define_method, attr_name) do
         self.remote_attributes = self.api.send(self.class.api_name, self.token) if self.remote_attributes.blank? && self.token.present?
-        self.remote_attributes[attr_name]
+        self.remote_attributes.try(:[], attr_name)
       end
     end
 

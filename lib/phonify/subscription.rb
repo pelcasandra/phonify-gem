@@ -9,16 +9,19 @@ class Phonify::Subscription < ActiveRecord::Base
   def find_or_create_token_by_remote_object
     create_attributes = self.remote_attributes.except(:active).merge(id: self.token, campaign_id: self.campaign_id).reject {|k,v| v.blank?}
     query_attributes = create_attributes.slice(*self.class::QUERY_ATTRS)
-    self.remote_attributes = self.api.send(self.api_name.pluralize, query_attributes).first || self.api.send("create_#{self.api_name}", create_attributes)
-    self.token = self.remote_attributes[:id]
-    self.active = self.remote_attributes[:active]
-    self.phone = Phonify::Phone.where(campaign_id: self.campaign_id, token: self.remote_attributes[:origin][:id]).first ||
-                 self.create_phone(self.remote_attributes[:origin].except(:id).merge({
-                   token: self.remote_attributes[:origin][:id],
-                   campaign_id: self.campaign_id,
-                   owner_id: self.owner_id,
-                   owner_type: self.owner_type,
-                 }))
+    if self.remote_attributes = (self.api.send(self.api_name.pluralize, query_attributes).first || self.api.send("create_#{self.api_name}", create_attributes).first)
+      self.token = self.remote_attributes[:id]
+      self.active = self.remote_attributes[:active]
+      self.phone = Phonify::Phone.where(campaign_id: self.campaign_id, token: self.remote_attributes[:origin][:id]).first ||
+                   self.create_phone(self.remote_attributes[:origin].except(:id).merge({
+                     token: self.remote_attributes[:origin][:id],
+                     campaign_id: self.campaign_id,
+                     owner_id: self.owner_id,
+                     owner_type: self.owner_type,
+                   }))
+    else
+      self.errors.add(:service, "not found")
+    end
   end
 
   def confirm!(pin)

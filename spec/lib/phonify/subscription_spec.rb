@@ -34,14 +34,14 @@ describe Phonify::Subscription do
     end
     it 'should create remote record if none exist' do
       @api.should_receive(:subscriptions).with(query_params).and_return([])
-      @api.should_receive(:create_subscription).with(create_attrs).and_return(phonify_subscription_attrs)
+      @api.should_receive(:create_subscription).with(create_attrs).and_return([phonify_subscription_attrs])
       subscription = Phonify::Subscription.create(create_attrs)
       subscription.reload.token.should == phonify_subscription_attrs[:id]
       subscription.reload.active.should == phonify_subscription_attrs[:active]
     end
     it 'should create local phone record' do
       @api.should_receive(:subscriptions).with(query_params).and_return([])
-      @api.should_receive(:create_subscription).with(create_attrs).and_return(phonify_subscription_attrs)
+      @api.should_receive(:create_subscription).with(create_attrs).and_return([phonify_subscription_attrs])
       lambda {
         @subscription = Phonify::Subscription.create(create_attrs)
       }.should change(Phonify::Phone, :count)
@@ -51,7 +51,7 @@ describe Phonify::Subscription do
     end
     it 'should associate local phone record if exist' do
       @api.should_receive(:subscriptions).with(query_params).and_return([])
-      @api.should_receive(:create_subscription).with(create_attrs).and_return(phonify_subscription_attrs)
+      @api.should_receive(:create_subscription).with(create_attrs).and_return([phonify_subscription_attrs])
       old_phone = FactoryGirl.create(:phone, origin_phone_attr.merge({
         campaign_id: phonify_subscription_attrs[:campaign_id],
         token: origin_phone_attr[:id],
@@ -66,7 +66,7 @@ describe Phonify::Subscription do
   context 'with subscription' do
     before(:each) do
       @api.should_receive(:subscriptions).with(query_params).and_return([])
-      @api.should_receive(:create_subscription).with(create_attrs).and_return(phonify_subscription_attrs)
+      @api.should_receive(:create_subscription).with(create_attrs).and_return([phonify_subscription_attrs])
       @subscription = Phonify::Subscription.create(create_attrs)
     end
     describe '#confirm!' do
