@@ -6,6 +6,8 @@ describe Phonify::Base do
     before(:each) do
       @api = mock "Phonify::Api"
       @api.stub!(:phone).and_return(phonify_phone_attrs)
+      @api.stub!(:phones).and_return([])
+      @api.stub!(:create_phone) {|params| phonify_phone_attrs.merge(params)}
       Phonify::Api.stub!(:instance).and_return(@api)
     end
     describe 'remote attributes' do
@@ -57,6 +59,7 @@ describe Phonify::Base do
 
   describe Phonify::Message do
     let(:phonify_message_attrs) { {
+      id: "message123",
       message: "hello",
       origin: {
         id: "abc",
@@ -75,11 +78,14 @@ describe Phonify::Base do
       amount: "0",
       currency: "USD",
       description: "Lorem ipsum",
-      created_at: 1.day.ago,
+      created_at: 1.day.ago.to_i,
+      schedule: 1.day.since.to_i,
     } }
     before(:each) do
       @api = mock "Phonify::Api"
       @api.stub!(:message).and_return(phonify_message_attrs)
+      @api.stub!(:messages).and_return([])
+      @api.stub!(:create_message) {|params| phonify_message_attrs.merge(params)}
       Phonify::Api.stub!(:instance).and_return(@api)
     end
     describe 'remote attributes' do
@@ -89,42 +95,6 @@ describe Phonify::Base do
         attr_name = Phonify::Message::REMOTE_ATTRS.sample
         message.send(attr_name).should == phonify_message_attrs[attr_name]
         message.remote_attributes.should == phonify_message_attrs
-      end
-    end
-
-    context '#belongs_to :owner' do
-      before(:each) do
-        Object.send :remove_const, :Message if defined?(Message)
-        Object.send :remove_const, :User if defined?(User)
-      end
-      context 'User has_one :message' do
-        before(:each) do
-          class Message < Phonify::Message; end
-          class User < ActiveRecord::Base
-            has_one :message, as: :owner
-          end
-        end
-        it 'should work' do
-          u = User.new
-          u.build_message
-          u.message.token = 'ABC'
-          u.save!
-          u.reload.message.token.should == 'ABC'
-        end
-      end
-      context 'User has_many :messages' do
-        before(:each) do
-          class Message < Phonify::Message; end
-          class User < ActiveRecord::Base
-            has_many :messages, as: :owner
-          end
-        end
-        it 'should work' do
-          u = User.new
-          u.messages.build(token: 'ABC')
-          u.save!
-          u.reload.messages.last.token.should == 'ABC'
-        end
       end
     end
   end
@@ -146,11 +116,13 @@ describe Phonify::Base do
       campaign_id: "camp1",
       active: true,
       description: "Lorem ipsum",
-      created_at: 1.day.ago,
+      created_at: 1.day.ago.to_i,
     } }
     before(:each) do
       @api = mock "Phonify::Api"
       @api.stub!(:subscription).and_return(phonify_subscription_attrs)
+      @api.stub!(:subscriptions).and_return([])
+      @api.stub!(:create_subscription) {|params| phonify_subscription_attrs.merge(params)}
       Phonify::Api.stub!(:instance).and_return(@api)
     end
     describe 'remote attributes' do

@@ -16,6 +16,22 @@ class Phonify::Api
     json_for request("/v1/campaigns/#{CGI.escape(params[:campaign_id])}/messages", params.except(:campaign_id), Net::HTTP::Post)
   end
 
+  def create_message(params)
+    json_for request("/v1/messages", params, Net::HTTP::Post)
+  end
+
+  def create_subscription(params)
+    json_for request("/v1/subscriptions", params, Net::HTTP::Post)
+  end
+
+  def confirm_subscription(subscription_id)
+    json_for request("/v1/subscriptions/#{CGI.escape(subscription_id)}/confirms")
+  end
+
+  def cancel_subscription(subscription_id)
+    json_for request("/v1/subscriptions/#{CGI.escape(subscription_id)}/cancel")
+  end
+
   def phone(phone_id)
     json_for request("/v1/phones/#{CGI.escape(phone_id)}")
   end

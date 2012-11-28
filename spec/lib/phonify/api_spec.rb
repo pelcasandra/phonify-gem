@@ -70,6 +70,52 @@ describe Phonify::Api do
         Phonify::Api.instance.message(message_id)
       end
     end
+    describe '#create_message' do
+      it 'should POST /v1/messages' do
+        params = { campaign_id: "abc", message: "Hello world", sender: { id: "123" }, receiver: { id: "456 "} }
+        @http.should_receive(:request) do |req|
+          req.method.should == 'POST'
+          req.path.should == '/v1/messages'
+          req.body.should == URI.encode_www_form(params)
+          response200
+        end
+        Phonify::Api.instance.create_message(params)
+      end
+    end
+    describe '#create_subscription' do
+      it 'should POST /v1/subscriptions' do
+        params = { campaign_id: "abc", origin: { id: "123" }, service: { id: "456 "} }
+        @http.should_receive(:request) do |req|
+          req.method.should == 'POST'
+          req.path.should == '/v1/subscriptions'
+          req.body.should == URI.encode_www_form(params)
+          response200
+        end
+        Phonify::Api.instance.create_subscription(params)
+      end
+    end
+    describe '#confirm_subscription' do
+      it 'should GET /v1/subscriptions/{SUBSCRIPTION_ID}/confirms' do
+        some_id = '%04d' % rand(9999)
+        @http.should_receive(:request) do |req|
+          req.method.should == 'GET'
+          req.path.should == '/v1/subscriptions/' + some_id + '/confirms'
+          response200
+        end
+        Phonify::Api.instance.confirm_subscription(some_id)
+      end
+    end
+    describe '#cancel_subscription' do
+      it 'should GET /v1/subscriptions/{SUBSCRIPTION_ID}/cancel' do
+        some_id = '%04d' % rand(9999)
+        @http.should_receive(:request) do |req|
+          req.method.should == 'GET'
+          req.path.should == '/v1/subscriptions/' + some_id + '/cancel'
+          response200
+        end
+        Phonify::Api.instance.cancel_subscription(some_id)
+      end
+    end
   end
   describe '#json_for' do
     let(:response301) { mock "Response", code: "301", :[] => 'http://yahoo.com/'}
