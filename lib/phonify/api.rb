@@ -44,6 +44,31 @@ class Phonify::Api
     json_for request("/v1/messages/#{CGI.escape(message_id)}")
   end
 
+  def params2query(params, prefix = nil)
+    params.collect do |k,v|
+      prefixed_k = prefix ? "#{prefix}[#{k}]" : k
+      case v
+      when Hash
+        params2query(v, prefixed_k)
+      when Array
+        v.collect {|item| params2query({"" => item}, prefixed_k)}.join('&')
+      else
+        URI.encode_www_form(prefixed_k => v)
+      end
+    end.join('&')
+  end
+
+  def deep_symbolize_keys!(value)
+    case value
+    when Hash
+      value.symbolize_keys!
+      value.each {|k,v| deep_symbolize_keys!(v)}
+    when Array
+      value.each {|v| deep_symbolize_keys!(v) }
+    end
+    value
+  end
+
   def request(url, params = {}, klass = Net::HTTP::Get, pem_filecontent = nil)
     uri = uri.kind_of?(URI::Generic) ? url : URI.join(base_url, url)
     http = Net::HTTP.new(uri.host, uri.port)

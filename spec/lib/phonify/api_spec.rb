@@ -139,4 +139,24 @@ describe Phonify::Api do
       Phonify::Api.instance.json_for(response500).should == { error: "500", reason: response500.body }
     end
   end
+  describe '#params2query' do
+    it 'should encode Hash like URI.encode_www_form' do
+      hash = { key: 123, email: "lorem+ipsum@example.com"}
+      Phonify::Api.instance.params2query(hash).should == URI.encode_www_form(hash)
+    end
+    it 'should flatten deep hash into parent[child]=value key pairs' do
+      hash = { key: { email: "lorem+ipsum@example.com" } }
+      Phonify::Api.instance.params2query(hash).should == URI.encode_www_form('key[email]' => "lorem+ipsum@example.com")
+    end
+    it 'should repeat arrays with key[]=value1&key[]=value2 etc' do
+      hash = { emails: ["ipsum@example.com","lorem@example.com"] }
+      Phonify::Api.instance.params2query(hash).should == URI.encode_www_form("emails[]"=>"ipsum@example.com") + '&' + URI.encode_www_form("emails[]"=>"lorem@example.com")
+    end
+  end
+  describe '#deep_symbolize_keys!' do
+    it 'should make all Hash keys as symbols' do
+      value = [1, 2, { "key1" => { "key2" => true }, :key3 => false }]
+      Phonify::Api.instance.deep_symbolize_keys!(value).should == [1, 2, {:key1=>{:key2=>true}, :key3=>false}]
+    end
+  end
 end
