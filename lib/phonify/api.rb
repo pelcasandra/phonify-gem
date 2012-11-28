@@ -20,6 +20,10 @@ class Phonify::Api
     json_for request("/v1/messages", params, Net::HTTP::Post)
   end
 
+  def subscriptions(params)
+    json_for request("/v1/subscriptions", params)
+  end
+
   def create_subscription(params)
     json_for request("/v1/subscriptions", params, Net::HTTP::Post)
   end

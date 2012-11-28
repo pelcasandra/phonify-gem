@@ -76,7 +76,7 @@ describe Phonify::Api do
         @http.should_receive(:request) do |req|
           req.method.should == 'POST'
           req.path.should == '/v1/messages'
-          req.body.should == URI.encode_www_form(params)
+          req.body.should == Phonify::Api.send(:new).params2query(params)
           response200
         end
         Phonify::Api.instance.create_message(params)
@@ -88,7 +88,7 @@ describe Phonify::Api do
         @http.should_receive(:request) do |req|
           req.method.should == 'POST'
           req.path.should == '/v1/subscriptions'
-          req.body.should == URI.encode_www_form(params)
+          req.body.should == Phonify::Api.send(:new).params2query(params)
           response200
         end
         Phonify::Api.instance.create_subscription(params)
@@ -114,6 +114,17 @@ describe Phonify::Api do
           response200
         end
         Phonify::Api.instance.cancel_subscription(some_id)
+      end
+    end
+    describe '#subscriptions' do
+      it 'should GET /v1/subscriptions' do
+        params = { campaign_id: "campaign123" }
+        @http.should_receive(:request) do |req|
+          req.method.should == 'GET'
+          req.path.should == '/v1/subscriptions?' + Phonify::Api.send(:new).params2query(params)
+          response200
+        end
+        Phonify::Api.instance.subscriptions(params)
       end
     end
   end
