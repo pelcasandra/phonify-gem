@@ -1,0 +1,13 @@
+Description:
+    Explain the generator
+
+Example:
+    rails generate phonify User
+
+    This will create:
+        db/migrate/{timestamp}_create_phones.rb
+        db/migrate/{timestamp}_create_messages.rb
+        db/migrate/{timestamp}_create_subscriptions.rb
+        app/models/phone.rb
+        app/models/message.rb
+        app/models/subscription.rb

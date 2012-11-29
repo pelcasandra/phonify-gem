@@ -1,4 +1,4 @@
-class CreateMessages < ActiveRecord::Migration
+class CreatePhonifyMessages < ActiveRecord::Migration
   def self.up
     create_table :phonify_messages do |t|
       t.references :owner, polymorphic: true

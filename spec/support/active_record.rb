@@ -1,7 +1,7 @@
 require 'active_record'
 
 ActiveRecord::Base.establish_connection adapter: "sqlite3", database: ":memory:"
-ActiveRecord::Migrator.up "db/migrate"
+ActiveRecord::Migrator.up "lib/generators/phonify/templates/db/migrate"
 
 ActiveRecord::Migration.create_table :users do |t|
   t.string :name

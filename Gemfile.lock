@@ -1,3 +1,9 @@
+PATH
+  remote: .
+  specs:
+    phonify (1.0.0)
+      activerecord
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -53,10 +59,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activemodel
-  activerecord
   factory_girl
   guard-rspec
-  rb-fsevent (~> 0.9.1)
+  phonify!
+  rb-fsevent
   rspec
   sqlite3

@@ -4,12 +4,15 @@ describe Phonify::Api do
   let(:response200) { mock "Response", code: "200", body: "[1,2,3]" }
   describe '#request' do
     before(:each) do
+      uri = URI.parse(Phonify::Api.instance.base_url)
       @http = mock "Http"
-      @http.should_receive(:use_ssl=).with(true)
-      @http.should_receive(:verify_mode=).with(0)
+      if uri.scheme == 'https'
+        @http.should_receive(:use_ssl=).with(true)
+        @http.should_receive(:verify_mode=).with(0)
+      end
       Net::HTTP.stub!(:new) do |host,port|
-        host.should == "api.phonify.io"
-        port.should == 443
+        host.should == uri.host
+        port.should == uri.port
         @http
       end
     end

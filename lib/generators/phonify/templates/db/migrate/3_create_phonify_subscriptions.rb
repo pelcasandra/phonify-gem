@@ -1,4 +1,4 @@
-class CreateSubscriptions < ActiveRecord::Migration
+class CreatePhonifySubscriptions < ActiveRecord::Migration
   def self.up
     create_table :phonify_subscriptions do |t|
       t.references :owner, polymorphic: true
