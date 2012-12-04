@@ -7,96 +7,98 @@ More info on [phonify.io/help](http://www.phonify.io/help).
 
 ## Installation
 
-Add gem to your Gemfile.
+### Add gem to your Gemfile.
 
     gem "phonify"
 
-Install the gem
+*NOTE:* gem developers do this instead: ``gem 'phonify', :path => '/your/phonify/git-clone/path'``
+
+### Install the gem
 
     bundle install
 
-Place the following code at the end of `config/application.rb` 
+### Run generator to create local Phonify tables
 
-    Phonify.config = {
-      :api_key => {VALUE},
-      :campaign_id => optional
-    }
+    $ rails generate phonify 
+          create  db/migrate/20121204172439_create_phonify_phones.rb
+          create  db/migrate/20121204172440_create_phonify_messages.rb
+          create  db/migrate/20121204172441_create_phonify_subscriptions.rb
+          insert  app/models/user.rb
+     initializer  phonify.rb
 
-Run generator to create local Phonify tables
+This will generate a config file ``config/initializers/phonify.rb`` where you can customize your settings
 
-    rails generate phonify
-    
-This will generate a migration file to store the necessary local references.
+    # Campaign settings
+    Phonify.config.campaign1 = 'CHANGEME'
+
+    # API authentication
+    Phonify.config.api_key = 'CHANGEME'
+
+*NOTE:* You can also pass the campaign name, key and api key directly to the generate command
+
+    rails generate phonify --campaign-name=mt --campaign-key=12345 --api-key=abcde
+
+Which will generate config file ``config/initializers/phonify.rb`` as
+
+    # Campaign settings
+    Phonify.config.mt = '12345'
+
+    # API authentication
+    Phonify.config.api_key = 'abcde'
+
+*NOTE:* If you have more than 1 campaign, just add more ``Phonify.config.campaign_name = 'key'`` configs to ``config/initializers/phonify.rb``
+
+Migration files will also be generated. These tables store the necessary local references. The remaining object attributes will be fetched from phonify.io via API at runtime
 
     create_table :phonify_phones do |t|
       t.references :owner, :polymorphic => true
+      t.string :campaign_id
       t.string :token
     end
 
     create_table :phonify_messages do |t|
       t.references :owner, :polymorphic => true
+      t.integer :subscription_id
+      t.integer :phone_id
+      t.string :campaign_id
       t.string :token
     end
 
     create_table :phonify_subscriptions do |t|
       t.references :owner, :polymorphic => true
+      t.integer :phone_id
+      t.string :campaign_id
       t.string :token
+      t.boolean :active
     end
 
-As well as ActiveRecord models which you can customize (all of the logic is already encapsulated in the super class)
+Your current ``app/models/user.rb`` will also be configured to use phonify.io subscription
 
-    class Phone < Phonify::Phone
-    end
+    class User < ActiveRecord::Base
+      has_one :mt_subscription, as: "owner",
+                                class_name: "Phonify::Subscription",
+                                conditions: { campaign_id: Phonify.config.mt }
 
-    class Message < Phonify::Message
-    end
+*NOTE:* If you have more than 1 campaign, just add more ``has_one …`` declarations with different ``campaign_id`` for the ``conditions`` hash.
 
-    class Subscription < Phonify::Subscription
-    end
+*NOTE:* Instead of ``User``, you can specify a different model to modify, e.g. ``rails generate phonify Account`` will modify ``app/models/account.rb`` instead
 
-Run migrations
+### Migrate the database to create the tables.
     
     rake db:migrate
 
 ## Usage
 
-### Simple Usage
+Assuming your user model is ``User``
 
-Sending a message is very simple
+    user = User.find(1)
 
-    Phonify::Message.new("646854345", "test message")
-    => #<Message :id => "KW9Aqn84ijagK6zseB5N", :message => "test message", :origin_phone => "7227", :destination_phone => "646854345", :delivered => false, :campaign_id => nil, :schedule_at => nil, :created_at => "2012-11-05 18:54:15", :updated_at => "2012-11-05 18:54:15">
+Creating a new subscription works the same way as a regular ActiveRecord ``has_one`` 
 
-Find a message
+    user.create_mt_subscription(origin: { number: 646854345 }, service: { number: 7117, country: 'es' })
+    => #<Phonify::Subscription :id => "ZNmtqyEcNPpAL8s4qxJv", :origin_phone => "646854345", :destination_phone => "7117", :active => false, :campaign_id => nil, :created_at => "2012-11-05 18:54:15", :updated_at => "2012-11-05 18:54:15">
 
-    Phonify::Message.find("KW9Aqn84ijagK6zseB5N")
-    => #<Message :id => "KW9Aqn84ijagK6zseB5N", :message => "test message", :origin_phone => "7227", :destination_phone => "646854345", :delivered => false, :campaign_id => nil, :schedule_at => nil, :created_at => "2012-11-05 18:54:15", :updated_at => "2012-11-05 18:54:15">
+Sending a message to your user is very simple
 
-Creating a new subscription is very easy too. 
-
-    Phonify::Subscription.new("646854345","7117")
-    => #<Subscription :id => "ZNmtqyEcNPpAL8s4qxJv", :origin_phone => "646854345", :destination_phone => "7117", :active => false, :campaign_id => nil, :created_at => "2012-11-05 18:54:15", :updated_at => "2012-11-05 18:54:15">
-
-### Extending Models
-
-Phonify can be extended to your application models using any Message, Phone or Subscription resource. You can use `has_phonify :resource`.
-
-The following example will relate your User object with Phonify subscriptions and messages. 
-
-    class User < ActiveRecord::Base
-      has_many :subscriptions
-      has_many :messages
-    end
-
-Requesting all messages and subscriptions from any user
-
-    a = User.find(1).messages
-    a = User.find(1).subscriptions
-
-Sending a message directly to a user is also easy if in this case (considering a Subscription belongs to a campaign)
-
-    a = User.find(1).send_message("Testing message directly to user")
-
-## Settings
-
-    rake phonify:pull   # will copy results from the cloud
+    user.mt_subscription.messages.create(message: "test message")
+    => #<Phonify::Message :id => "KW9Aqn84ijagK6zseB5N", :message => "test message", :origin_phone => "7227", :destination_phone => "646854345", :delivered => false, :campaign_id => nil, :schedule_at => nil, :created_at => "2012-11-05 18:54:15", :updated_at => "2012-11-05 18:54:15">

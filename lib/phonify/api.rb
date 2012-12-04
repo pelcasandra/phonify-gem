@@ -8,8 +8,8 @@ class Phonify::Api
   attr_accessor :base_url, :api_key
 
   def initialize
-    @base_url = ENV['PHONIFY_API_BASE_URL'] || Phonify::Campaign.config.base_url || "https://api.phonify.io"
-    @api_key  = ENV['PHONIFY_API_KEY'] || Phonify::Campaign.config.api_key
+    @base_url = ENV['PHONIFY_API_BASE_URL'] || Phonify.config.base_url || "https://api.phonify.io"
+    @api_key  = ENV['PHONIFY_API_KEY'] || Phonify.config.api_key
   end
 
   def broadcast(params)
