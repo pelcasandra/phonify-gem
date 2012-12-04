@@ -16,6 +16,10 @@ class Phonify::Api
     json_for request("/v1/campaigns/#{CGI.escape(params[:campaign_id])}/messages", params.except(:campaign_id), Net::HTTP::Post)
   end
 
+  def messages(params)
+    json_for request("/v1/messages", params)
+  end
+
   def create_message(params)
     json_for request("/v1/messages", params, Net::HTTP::Post)
   end
