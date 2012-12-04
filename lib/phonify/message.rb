@@ -3,23 +3,23 @@ class Phonify::Message < ActiveRecord::Base
   QUERY_ATTRS = [:campaign_id, :message, :origin, :destination, :sent, :offset, :limit]
   include Phonify::Base
   def self.broadcast(campaign_id, message, schedule = nil)
-    api.broadcast(campaign_id: campaign_id, message: message, schedule: schedule)
+    api.broadcast(:campaign_id => campaign_id, :message => message, :schedule => schedule)
   end
 
   before_create :find_or_create_token_by_remote_object, :unless => :token?
   def find_or_create_token_by_remote_object
-    create_attributes = { message: self.remote_attributes[:message],
-                          sender: self.remote_attributes[:origin],
-                          receiver: [self.remote_attributes[:destination]],
-                          campaign_id: self.campaign_id,
-                          schedule: self.remote_attributes[:schedule],
+    create_attributes = { :message => self.remote_attributes[:message],
+                          :sender => self.remote_attributes[:origin],
+                          :receiver => [self.remote_attributes[:destination]],
+                          :campaign_id => self.campaign_id,
+                          :schedule => self.remote_attributes[:schedule],
                         }
     self.remote_attributes = self.api.send("create_#{self.api_name}", create_attributes)
     self.token = self.remote_attributes[:id]
   end
 
-  belongs_to :subscription, class_name: Phonify::Subscription
-  belongs_to :phone, class_name: Phonify::Phone
+  belongs_to :subscription, :class_name => Phonify::Subscription
+  belongs_to :phone, :class_name => Phonify::Phone
 
   class Collection
     def initialize(scope, params)
@@ -31,9 +31,9 @@ class Phonify::Message < ActiveRecord::Base
       self
     end
     def find_or_create_from(remote_object)
-      if record = @scope.where(token: remote_object[:id], campaign_id: remote_object[:campaign_id]).first
+      if record = @scope.where(:token => remote_object[:id], :campaign_id => remote_object[:campaign_id]).first
         #
-      else record = @scope.new(token: remote_object[:id], campaign_id: remote_object[:campaign_id])
+      else record = @scope.new(:token => remote_object[:id], :campaign_id => remote_object[:campaign_id])
         record.remote_attributes = remote_object
         record.save!
       end

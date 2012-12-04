@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Phonify::Base do
   describe Phonify::Phone do
-    let(:phonify_phone_attrs) { {number: "8888", country: "es", campaign_id: "007", description: "Lorem ipsum", created_at: 1.day.ago.to_i} }
+    let(:phonify_phone_attrs) { {:number => "8888", :country => "es", :campaign_id => "007", :description => "Lorem ipsum", :created_at => 1.day.ago.to_i} }
     before(:each) do
       @api = mock "Phonify::Api"
       @api.stub!(:phone).and_return(phonify_phone_attrs)
@@ -29,7 +29,7 @@ describe Phonify::Base do
         before(:each) do
           class Phone < Phonify::Phone; end
           class User < ActiveRecord::Base
-            has_one :phone, as: :owner
+            has_one :phone, :as => :owner
           end
         end
         it 'should work' do
@@ -44,12 +44,12 @@ describe Phonify::Base do
         before(:each) do
           class Phone < Phonify::Phone; end
           class User < ActiveRecord::Base
-            has_many :phones, as: :owner
+            has_many :phones, :as => :owner
           end
         end
         it 'should work' do
           u = User.new
-          u.phones.build(token: 'ABC')
+          u.phones.build(:token => 'ABC')
           u.save!
           u.reload.phones.last.token.should == 'ABC'
         end
@@ -59,27 +59,27 @@ describe Phonify::Base do
 
   describe Phonify::Message do
     let(:phonify_message_attrs) { {
-      id: "message123",
-      message: "hello",
-      origin: {
-        id: "abc",
-        number: "111",
-        country: "es",
-        carrier: "movistar",
+      :id => "message123",
+      :message => "hello",
+      :origin => {
+        :id => "abc",
+        :number => "111",
+        :country => "es",
+        :carrier => "movistar",
       },
-      destination: {
-        id: "xyz",
-        number: "999",
-        country: "us",
-        carrier: "att",
+      :destination => {
+        :id => "xyz",
+        :number => "999",
+        :country => "us",
+        :carrier => "att",
       },
-      campaign_id: "camp1",
-      delivered: true,
-      amount: "0",
-      currency: "USD",
-      description: "Lorem ipsum",
-      created_at: 1.day.ago.to_i,
-      schedule: 1.day.since.to_i,
+      :campaign_id => "camp1",
+      :delivered => true,
+      :amount => "0",
+      :currency => "USD",
+      :description => "Lorem ipsum",
+      :created_at => 1.day.ago.to_i,
+      :schedule => 1.day.since.to_i,
     } }
     before(:each) do
       @api = mock "Phonify::Api"
@@ -101,22 +101,22 @@ describe Phonify::Base do
 
   describe Phonify::Subscription do
     let(:phonify_subscription_attrs) { {
-      origin: {
-        id: "abc",
-        number: "111",
-        country: "es",
-        carrier: "movistar",
+      :origin => {
+        :id => "abc",
+        :number => "111",
+        :country => "es",
+        :carrier => "movistar",
       },
-      service: {
-        id: "xyz",
-        number: "999",
-        country: "us",
-        carrier: "att",
+      :service => {
+        :id => "xyz",
+        :number => "999",
+        :country => "us",
+        :carrier => "att",
       },
-      campaign_id: "camp1",
-      active: true,
-      description: "Lorem ipsum",
-      created_at: 1.day.ago.to_i,
+      :campaign_id => "camp1",
+      :active => true,
+      :description => "Lorem ipsum",
+      :created_at => 1.day.ago.to_i,
     } }
     before(:each) do
       @api = mock "Phonify::Api"
@@ -144,7 +144,7 @@ describe Phonify::Base do
         before(:each) do
           class Subscription < Phonify::Subscription; end
           class User < ActiveRecord::Base
-            has_one :subscription, as: :owner
+            has_one :subscription, :as => :owner
           end
         end
         it 'should work' do
@@ -159,12 +159,12 @@ describe Phonify::Base do
         before(:each) do
           class Subscription < Phonify::Subscription; end
           class User < ActiveRecord::Base
-            has_many :subscriptions, as: :owner
+            has_many :subscriptions, :as => :owner
           end
         end
         it 'should work' do
           u = User.new
-          u.subscriptions.build(token: 'ABC')
+          u.subscriptions.build(:token => 'ABC')
           u.save!
           u.reload.subscriptions.last.token.should == 'ABC'
         end

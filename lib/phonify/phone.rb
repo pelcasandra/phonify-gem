@@ -4,8 +4,8 @@ class Phonify::Phone < ActiveRecord::Base
   include Phonify::Base
 
   def messages(scope = Phonify::Message)
-    return Phonify::Message.where(phone_id: self.id) if scope == :local
-    Phonify::Message::Collection.new(scope.where(phone_id: self.id), destination: { id: self.token }, campaign_id: self.campaign_id)
+    return Phonify::Message.where(:phone_id => self.id) if scope == :local
+    Phonify::Message::Collection.new(scope.where(:phone_id => self.id), :destination => { :id => self.token }, :campaign_id => self.campaign_id)
   end
 
 end

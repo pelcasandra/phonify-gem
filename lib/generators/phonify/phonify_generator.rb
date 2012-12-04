@@ -13,8 +13,8 @@ class PhonifyGenerator < Rails::Generators::Base
     Dir[File.expand_path('app/models/*.rb', self.class.source_root)].sort.each do |file|
       copy_file file, 'app/models/' + File.basename(file)
     end
-    inject_into_file "app/models/#{user.underscore}.rb", after: "class #{user.camelize} < ActiveRecord::Base\n" do
-      "  has_one :#{sanitized_campaign_name}_subscription, #{hash_string(:as => '"owner"', :class_name => '"Subscription"', :conditions => '{ ' + hash_string(campaign_id: "Phonify::Campaign.config.#{sanitized_campaign_name}") + ' }')}\n"
+    inject_into_file "app/models/#{user.underscore}.rb", :after => "class #{user.camelize} < ActiveRecord::Base\n" do
+      "  has_one :#{sanitized_campaign_name}_subscription, #{hash_string(:as => '"owner"', :class_name => '"Subscription"', :conditions => '{ ' + hash_string(:campaign_id => "Phonify::Campaign.config.#{sanitized_campaign_name}") + ' }')}\n"
     end
     initializer("phonify.rb") do
       <<-RUBY.strip_heredoc

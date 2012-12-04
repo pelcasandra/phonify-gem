@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Phonify::Api do
-  let(:response200) { mock "Response", code: "200", body: "[1,2,3]" }
+  let(:response200) { mock "Response", :code => "200", :body => "[1,2,3]" }
   describe '#request' do
     before(:each) do
       uri = URI.parse(Phonify::Api.instance.base_url)
@@ -18,7 +18,7 @@ describe Phonify::Api do
     end
     describe '#broadcast' do
       it 'should call /v1/campaigns/{CAMPAIGN_ID}/messages' do
-        attrs = { message: "this is sms", campaign_id: "camp-#{rand(100)}", schedule: 3.days.since.to_i }
+        attrs = { :message => "this is sms", :campaign_id => "camp-#{rand(100)}", :schedule => 3.days.since.to_i }
         @http.should_receive(:request) do |req|
           req.method.should == 'POST'
           req.path.should == "/v1/campaigns/" + CGI.escape(attrs[:campaign_id]) + "/messages"
@@ -75,7 +75,7 @@ describe Phonify::Api do
     end
     describe '#create_message' do
       it 'should POST /v1/messages' do
-        params = { campaign_id: "abc", message: "Hello world", sender: { id: "123" }, receiver: { id: "456 "} }
+        params = { :campaign_id => "abc", :message => "Hello world", :sender => { :id => "123" }, :receiver => { :id => "456 "} }
         @http.should_receive(:request) do |req|
           req.method.should == 'POST'
           req.path.should == '/v1/messages'
@@ -87,7 +87,7 @@ describe Phonify::Api do
     end
     describe '#create_subscription' do
       it 'should POST /v1/subscriptions' do
-        params = { campaign_id: "abc", origin: { id: "123" }, service: { id: "456 "} }
+        params = { :campaign_id => "abc", :origin => { :id => "123" }, :service => { :id => "456 "} }
         @http.should_receive(:request) do |req|
           req.method.should == 'POST'
           req.path.should == '/v1/subscriptions'
@@ -121,7 +121,7 @@ describe Phonify::Api do
     end
     describe '#subscriptions' do
       it 'should GET /v1/subscriptions' do
-        params = { campaign_id: "campaign123" }
+        params = { :campaign_id => "campaign123" }
         @http.should_receive(:request) do |req|
           req.method.should == 'GET'
           req.path.should == '/v1/subscriptions?' + Phonify::Api.send(:new).params2query(params)
@@ -132,9 +132,9 @@ describe Phonify::Api do
     end
   end
   describe '#json_for' do
-    let(:response301) { mock "Response", code: "301", :[] => 'http://yahoo.com/'}
-    let(:response404) { mock "Response", code: "404", :[] => nil, body: "Blah #{rand(999)} Not Found" }
-    let(:response500) { mock "Response", code: "500", :[] => nil, body: "Error #{rand(999)}" }
+    let(:response301) { mock "Response", :code => "301", :[] => 'http://yahoo.com/'}
+    let(:response404) { mock "Response", :code => "404", :[] => nil, :body => "Blah #{rand(999)} Not Found" }
+    let(:response500) { mock "Response", :code => "500", :[] => nil, :body => "Error #{rand(999)}" }
     it 'should return parsed JSON when successful' do
       Phonify::Api.instance.json_for(response200).should == [1,2,3]
     end
@@ -149,21 +149,21 @@ describe Phonify::Api do
       Phonify::Api.instance.json_for(response301).should == [1,2,3]
     end
     it 'should return error JSON otherwise' do
-      Phonify::Api.instance.json_for(response404).should == { error: "404", reason: response404.body }
-      Phonify::Api.instance.json_for(response500).should == { error: "500", reason: response500.body }
+      Phonify::Api.instance.json_for(response404).should == { :error => "404", :reason => response404.body }
+      Phonify::Api.instance.json_for(response500).should == { :error => "500", :reason => response500.body }
     end
   end
   describe '#params2query' do
     it 'should encode Hash like URI.encode_www_form' do
-      hash = { key: 123, email: "lorem+ipsum@example.com"}
+      hash = { :key => 123, :email => "lorem+ipsum@example.com"}
       Phonify::Api.instance.params2query(hash).should == URI.encode_www_form(hash)
     end
     it 'should flatten deep hash into parent[child]=value key pairs' do
-      hash = { key: { email: "lorem+ipsum@example.com" } }
+      hash = { :key => { :email => "lorem+ipsum@example.com" } }
       Phonify::Api.instance.params2query(hash).should == URI.encode_www_form('key[email]' => "lorem+ipsum@example.com")
     end
     it 'should repeat arrays with key[]=value1&key[]=value2 etc' do
-      hash = { emails: ["ipsum@example.com","lorem@example.com"] }
+      hash = { :emails => ["ipsum@example.com","lorem@example.com"] }
       Phonify::Api.instance.params2query(hash).should == URI.encode_www_form("emails[]"=>"ipsum@example.com") + '&' + URI.encode_www_form("emails[]"=>"lorem@example.com")
     end
   end

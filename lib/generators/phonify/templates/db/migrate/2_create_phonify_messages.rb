@@ -1,7 +1,7 @@
 class CreatePhonifyMessages < ActiveRecord::Migration
   def self.up
     create_table :phonify_messages do |t|
-      t.references :owner, polymorphic: true
+      t.references :owner, :polymorphic => true
       t.integer :subscription_id
       t.integer :phone_id
       t.string :campaign_id

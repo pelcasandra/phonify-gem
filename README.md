@@ -29,17 +29,17 @@ Run generator to create local Phonify tables
 This will generate a migration file to store the necessary local references.
 
     create_table :phonify_phones do |t|
-      t.references :owner, polymorphic: true
+      t.references :owner, :polymorphic => true
       t.string :token
     end
 
     create_table :phonify_messages do |t|
-      t.references :owner, polymorphic: true
+      t.references :owner, :polymorphic => true
       t.string :token
     end
 
     create_table :phonify_subscriptions do |t|
-      t.references :owner, polymorphic: true
+      t.references :owner, :polymorphic => true
       t.string :token
     end
 
@@ -65,17 +65,17 @@ Run migrations
 Sending a message is very simple
 
     Phonify::Message.new("646854345", "test message")
-    => #<Message id: "KW9Aqn84ijagK6zseB5N", message: "test message", origin_phone: "7227", destination_phone: "646854345", delivered: false, campaign_id: nil, schedule_at: nil, created_at: "2012-11-05 18:54:15", updated_at: "2012-11-05 18:54:15">
+    => #<Message :id => "KW9Aqn84ijagK6zseB5N", :message => "test message", :origin_phone => "7227", :destination_phone => "646854345", :delivered => false, :campaign_id => nil, :schedule_at => nil, :created_at => "2012-11-05 18:54:15", :updated_at => "2012-11-05 18:54:15">
 
 Find a message
 
     Phonify::Message.find("KW9Aqn84ijagK6zseB5N")
-    => #<Message id: "KW9Aqn84ijagK6zseB5N", message: "test message", origin_phone: "7227", destination_phone: "646854345", delivered: false, campaign_id: nil, schedule_at: nil, created_at: "2012-11-05 18:54:15", updated_at: "2012-11-05 18:54:15">
+    => #<Message :id => "KW9Aqn84ijagK6zseB5N", :message => "test message", :origin_phone => "7227", :destination_phone => "646854345", :delivered => false, :campaign_id => nil, :schedule_at => nil, :created_at => "2012-11-05 18:54:15", :updated_at => "2012-11-05 18:54:15">
 
 Creating a new subscription is very easy too. 
 
     Phonify::Subscription.new("646854345","7117")
-    => #<Subscription id: "ZNmtqyEcNPpAL8s4qxJv", origin_phone: "646854345", destination_phone: "7117", active: false, campaign_id: nil, created_at: "2012-11-05 18:54:15", updated_at: "2012-11-05 18:54:15">
+    => #<Subscription :id => "ZNmtqyEcNPpAL8s4qxJv", :origin_phone => "646854345", :destination_phone => "7117", :active => false, :campaign_id => nil, :created_at => "2012-11-05 18:54:15", :updated_at => "2012-11-05 18:54:15">
 
 ### Extending Models
 
