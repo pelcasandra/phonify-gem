@@ -6,6 +6,7 @@ module Phonify::Base
     base.table_name = base.name.gsub(/\W+/, '_').tableize
     base.belongs_to :owner, :polymorphic => true
     base.send(:attr_accessible, :token, :campaign_id, :owner_id, :owner_type)
+    base.record_timestamps = false # remove annoying "DEPRECATION WARNING: You're trying to create an attribute `created_at'..."
 
     base.send(:attr_accessor, :remote_attributes)
     base.after_initialize do |object|
