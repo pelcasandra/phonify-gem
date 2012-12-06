@@ -17,7 +17,7 @@ More info on [phonify.io/help](http://www.phonify.io/help).
 
     bundle install
 
-### Run generator to create local Phonify tables
+### Run generator to setup your app
 
     $ rails generate phonify 
           create  db/migrate/20121204172439_create_phonify_phones.rb
@@ -33,20 +33,6 @@ This will generate a config file ``config/initializers/phonify.rb`` where you ca
 
     # API authentication
     Phonify.config.api_key = 'CHANGEME'
-
-*NOTE:* You can also pass the campaign name, key and api key directly to the generate command
-
-    rails generate phonify --campaign-name=mt --campaign-key=12345 --api-key=abcde
-
-Which will generate config file ``config/initializers/phonify.rb`` as
-
-    # Campaign settings
-    Phonify.config.mt = '12345'
-
-    # API authentication
-    Phonify.config.api_key = 'abcde'
-
-*NOTE:* If you have more than 1 campaign, just add more ``Phonify.config.campaign_name = 'key'`` configs to ``config/initializers/phonify.rb``
 
 Migration files will also be generated. These tables store the necessary local references. The remaining object attributes will be fetched from phonify.io via API at runtime
 
@@ -75,13 +61,32 @@ Migration files will also be generated. These tables store the necessary local r
 Your current ``app/models/user.rb`` will also be configured to use phonify.io subscription
 
     class User < ActiveRecord::Base
-      has_one :mt_subscription, as: "owner",
-                                class_name: "Phonify::Subscription",
-                                conditions: { campaign_id: Phonify.config.mt }
+      has_one :campaign1_subscription, as: "owner",
+                                       class_name: "Phonify::Subscription",
+                                       conditions: { campaign_id: Phonify.config.campaign1 }
 
-*NOTE:* If you have more than 1 campaign, just add more ``has_one …`` declarations with different ``campaign_id`` for the ``conditions`` hash.
+##### Options
 
-*NOTE:* Instead of ``User``, you can specify a different model to modify, e.g. ``rails generate phonify Account`` will modify ``app/models/account.rb`` instead
+You can also be explicit about the user class name, or provide the campaign name, key and your api key directly to the generate command, e.g.
+
+    rails generate phonify Account --campaign-name=monthly --campaign-key=AAA --api-key=BBB
+
+Which will generate config file ``config/initializers/phonify.rb`` as
+
+    # Campaign settings
+    Phonify.config.monthly = 'AAA'
+
+    # API authentication
+    Phonify.config.api_key = 'BBB'
+
+And configure ``app/models/account.rb`` as
+
+    class Account < ActiveRecord::Base
+      has_one :monthly_subscription, as: "owner",
+                                       class_name: "Phonify::Subscription",
+                                       conditions: { campaign_id: Phonify.config.monthly }
+
+*NOTE:* If you have more than 1 campaign, just add more ``Phonify.config.campaign_name = 'key'`` configs to ``config/initializers/phonify.rb`` and add more ``has_one …`` declarations with different ``campaign_id`` for the ``conditions`` hash.
 
 ### Migrate the database to create the tables.
     
@@ -89,16 +94,16 @@ Your current ``app/models/user.rb`` will also be configured to use phonify.io su
 
 ## Usage
 
-Assuming your user model is ``User``
+Assuming your user model is ``User`` and campaign name is ``monthly``
 
-    user = User.find(1)
+    john = User.find(1)
 
 Creating a new subscription works the same way as a regular ActiveRecord ``has_one`` 
 
-    user.create_mt_subscription(origin: { number: 646854345 }, service: { number: 7117, country: 'es' })
-    => #<Phonify::Subscription :id => "ZNmtqyEcNPpAL8s4qxJv", :origin_phone => "646854345", :destination_phone => "7117", :active => false, :campaign_id => nil, :created_at => "2012-11-05 18:54:15", :updated_at => "2012-11-05 18:54:15">
+    john.create_monthly_subscription(origin: { number: "646854345" }, service: { number: "7117", country: "es" })
+    => #<Phonify::Subscription :id => "ZNmtqyEcNPpAL8s4qxJv", ...>
 
 Sending a message to your user is very simple
 
-    user.mt_subscription.messages.create(message: "test message")
-    => #<Phonify::Message :id => "KW9Aqn84ijagK6zseB5N", :message => "test message", :origin_phone => "7227", :destination_phone => "646854345", :delivered => false, :campaign_id => nil, :schedule_at => nil, :created_at => "2012-11-05 18:54:15", :updated_at => "2012-11-05 18:54:15">
+    john.monthly_subscription.messages.create(message: "test message")
+    => #<Phonify::Message :id => "KW9Aqn84ijagK6zseB5N", ...>
