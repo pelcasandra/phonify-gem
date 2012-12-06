@@ -37,8 +37,12 @@ class Phonify::Subscription < ActiveRecord::Base
   end
 
   def messages(scope = Phonify::Message)
-    return Phonify::Message.where(:subscription_id => self.id) if scope == :local
-    self.phone.messages(scope.where(:subscription_id => self.id))
+    return Phonify::Message.where(:subscription_id => self.id, :phone_id => self.phone.id) if scope == :local
+    Phonify::Message::Collection.new(scope.where(:subscription_id => self.id, :phone_id => self.phone.id), {
+      :origin => self.origin,
+      :destination => [{ :id => self.phone.token }],
+      :campaign_id => self.campaign_id,
+    })
   end
 
 end

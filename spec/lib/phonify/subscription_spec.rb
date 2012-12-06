@@ -104,7 +104,7 @@ describe Phonify::Subscription do
         }
       }
       let(:scope_params) { {
-        :destination => { :id => @subscription.phone.token }, :campaign_id => @subscription.campaign_id
+        :origin => @subscription.origin, :destination => [{ :id => @subscription.phone.token }], :campaign_id => @subscription.campaign_id
       } }
       it 'should generate proxy object (no api calls yet)' do
         lambda {
@@ -120,17 +120,17 @@ describe Phonify::Subscription do
       describe '#messages.create' do
         it 'should call api create message with destination.id = subscription.phone.token' do
           sms_text = "hello world"
-          @api.should_receive(:create_message).with(scope_params.merge(:message => sms_text)).and_return(phonify_message_attrs.merge(:message => sms_text, :id => "new123"))
+          @api.should_receive(:create_message).with(scope_params.merge(:message => sms_text)).and_return([phonify_message_attrs.merge(:message => sms_text, :id => "new123")])
           lambda {
-            @subscription.messages.create(:message => sms_text).class.should == Phonify::Message
+            @subscription.messages.create(:message => sms_text).class.should == Array
           }.should change(Phonify::Message, :count)
         end
       end
       describe '#messages(:local)' do
         it 'should retrieve messages from local db where subscription_id = self.id' do
           sms_text = "hello world"
-          @api.should_receive(:create_message).with(scope_params.merge(:message => sms_text)).and_return(phonify_message_attrs.merge(:message => sms_text, :id => "new123"))
-          db_message = @subscription.messages.create(:message => sms_text)
+          @api.should_receive(:create_message).with(scope_params.merge(:message => sms_text)).and_return([phonify_message_attrs.merge(:message => sms_text, :id => "new123")])
+          db_message, *cdr = @subscription.messages.create(:message => sms_text)
           @subscription.reload.messages(:local).should == [db_message]
           db_message.subscription.should == @subscription
           db_message.phone.should == @subscription.phone

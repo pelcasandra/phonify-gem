@@ -9,8 +9,8 @@ class Phonify::Message < ActiveRecord::Base
   before_create :find_or_create_token_by_remote_object, :unless => :token?
   def find_or_create_token_by_remote_object
     create_attributes = { :message => self.remote_attributes[:message],
-                          :sender => self.remote_attributes[:origin],
-                          :receiver => [self.remote_attributes[:destination]],
+                          :origin => self.remote_attributes[:origin],
+                          :destination => [self.remote_attributes[:destination]],
                           :campaign_id => self.campaign_id,
                           :schedule => self.remote_attributes[:schedule],
                         }
@@ -40,8 +40,10 @@ class Phonify::Message < ActiveRecord::Base
       record
     end
     def create(attrs)
-      remote_object = Phonify::Message.api.create_message(@params.merge(attrs))
-      find_or_create_from remote_object
+      remote_objects = Phonify::Message.api.create_message(@params.merge(attrs))
+      remote_objects.collect do |remote_object|
+        find_or_create_from remote_object
+      end
     end
     def method_missing(sym, *args)
       array = Phonify::Message.api.messages(@params).collect do |remote_object|

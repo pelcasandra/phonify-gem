@@ -75,7 +75,7 @@ describe Phonify::Api do
     end
     describe '#create_message' do
       it 'should POST /v1/messages' do
-        params = { :campaign_id => "abc", :message => "Hello world", :sender => { :id => "123" }, :receiver => { :id => "456 "} }
+        params = { :campaign_id => "abc", :message => "Hello world", :origin => { :id => "123" }, :destination => [{ :id => "456 "}] }
         @http.should_receive(:request) do |req|
           req.method.should == 'POST'
           req.path.should == '/v1/messages'

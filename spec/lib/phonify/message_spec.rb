@@ -30,8 +30,8 @@ describe Phonify::Message do
     it 'should store "token=message.id" from existing remote record' do
       attrs = phonify_message_attrs.except(:id, :created_at)
       params = { :message => attrs[:message],
-                 :sender => attrs[:origin],
-                 :receiver => [attrs[:destination]],
+                 :origin => attrs[:origin],
+                 :destination => [attrs[:destination]],
                  :campaign_id => attrs[:campaign_id],
                  :schedule => attrs[:schedule],
                }
