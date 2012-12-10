@@ -4,6 +4,8 @@ module Phonify
   def self.config
     @config ||= OpenStruct.new
   end
+
+  class Exception < ::Exception; end
 end
 
 require 'phonify/base'

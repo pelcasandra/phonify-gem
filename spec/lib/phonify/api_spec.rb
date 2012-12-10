@@ -133,8 +133,8 @@ describe Phonify::Api do
   end
   describe '#json_for' do
     let(:response301) { mock "Response", :code => "301", :[] => 'http://yahoo.com/'}
-    let(:response404) { mock "Response", :code => "404", :[] => nil, :body => "Blah #{rand(999)} Not Found" }
-    let(:response500) { mock "Response", :code => "500", :[] => nil, :body => "Error #{rand(999)}" }
+    let(:response404) { mock "Response", :code => "404", :[] => nil, :body => {errors: [{ type: "not_found", title: "Blah #{rand(999)} Not Found"}]}.to_json }
+    let(:response500) { mock "Response", :code => "500", :[] => nil, :body => {errors: [{ type: "not_found", title: "Error #{rand(999)}"}]}.to_json }
     it 'should return parsed JSON when successful' do
       Phonify::Api.instance.json_for(response200).should == [1,2,3]
     end
@@ -149,8 +149,16 @@ describe Phonify::Api do
       Phonify::Api.instance.json_for(response301).should == [1,2,3]
     end
     it 'should return error JSON otherwise' do
-      Phonify::Api.instance.json_for(response404).should == { :error => "404", :reason => response404.body }
-      Phonify::Api.instance.json_for(response500).should == { :error => "500", :reason => response500.body }
+      begin
+        Phonify::Api.instance.json_for(response404).should == "have raised error, and not reach here"
+      rescue Phonify::Exception
+        $!.message.should == response404.body
+      end
+      begin
+        Phonify::Api.instance.json_for(response500).should == "have raised error, and not reach here"
+      rescue Phonify::Exception
+        $!.message.should == response500.body
+      end
     end
   end
   describe '#params2query' do

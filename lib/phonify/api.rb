@@ -106,7 +106,7 @@ class Phonify::Api
     elsif response['location']
       json_for request(response['location'])
     else
-      { :error => response.code, :reason => response.body }
+      raise Phonify::Exception.new(response.body)
     end
   end
 
