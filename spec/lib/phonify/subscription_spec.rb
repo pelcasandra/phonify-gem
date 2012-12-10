@@ -103,7 +103,10 @@ describe Phonify::Subscription do
           :schedule => 1.day.since.to_i,
         }
       }
-      let(:scope_params) { {
+      let(:query_scope_params) { {
+        :origin => @subscription.origin, :destination => { :id => @subscription.phone.token }, :campaign_id => @subscription.campaign_id
+      } }
+      let(:create_scope_params) { {
         :origin => @subscription.origin, :destination => [{ :id => @subscription.phone.token }], :campaign_id => @subscription.campaign_id
       } }
       it 'should generate proxy object (no api calls yet)' do
@@ -112,7 +115,7 @@ describe Phonify::Subscription do
         }.should_not change(Phonify::Message, :count)
       end
       it 'should call api query messages with destination.id = subscription.phone.token' do
-        @api.should_receive(:messages).with(scope_params).and_return([phonify_message_attrs])
+        @api.should_receive(:messages).with(query_scope_params).and_return([phonify_message_attrs])
         lambda {
           @subscription.messages.to_a
         }.should change(Phonify::Message, :count)
@@ -120,7 +123,7 @@ describe Phonify::Subscription do
       describe '#messages.create' do
         it 'should call api create message with destination.id = subscription.phone.token' do
           sms_text = "hello world"
-          @api.should_receive(:create_message).with(scope_params.merge(:message => sms_text)).and_return([phonify_message_attrs.merge(:message => sms_text, :id => "new123")])
+          @api.should_receive(:create_message).with(create_scope_params.merge(:message => sms_text)).and_return([phonify_message_attrs.merge(:message => sms_text, :id => "new123")])
           lambda {
             @subscription.messages.create(:message => sms_text).class.should == Array
           }.should change(Phonify::Message, :count)
@@ -129,7 +132,7 @@ describe Phonify::Subscription do
       describe '#messages(:local)' do
         it 'should retrieve messages from local db where subscription_id = self.id' do
           sms_text = "hello world"
-          @api.should_receive(:create_message).with(scope_params.merge(:message => sms_text)).and_return([phonify_message_attrs.merge(:message => sms_text, :id => "new123")])
+          @api.should_receive(:create_message).with(create_scope_params.merge(:message => sms_text)).and_return([phonify_message_attrs.merge(:message => sms_text, :id => "new123")])
           db_message, *cdr = @subscription.messages.create(:message => sms_text)
           @subscription.reload.messages(:local).should == [db_message]
           db_message.subscription.should == @subscription

@@ -40,7 +40,7 @@ class Phonify::Subscription < ActiveRecord::Base
     return Phonify::Message.where(:subscription_id => self.id, :phone_id => self.phone.id) if scope == :local
     Phonify::Message::Collection.new(scope.where(:subscription_id => self.id, :phone_id => self.phone.id), {
       :origin => self.origin,
-      :destination => [{ :id => self.phone.token }],
+      :destination => { :id => self.phone.token },
       :campaign_id => self.campaign_id,
     })
   end

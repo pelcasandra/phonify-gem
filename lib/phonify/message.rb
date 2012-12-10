@@ -40,7 +40,9 @@ class Phonify::Message < ActiveRecord::Base
       record
     end
     def create(attrs)
-      remote_objects = Phonify::Message.api.create_message(@params.merge(attrs))
+      create_params = @params.merge(attrs)
+      create_params = create_params[:destination].present? ? create_params.merge(destination: [create_params[:destination]]) : create_params
+      remote_objects = Phonify::Message.api.create_message(create_params)
       remote_objects.collect do |remote_object|
         find_or_create_from remote_object
       end
