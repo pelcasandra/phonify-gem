@@ -100,7 +100,12 @@ Assuming your user model is ``User`` and campaign name is ``monthly``
 
 Creating a new subscription works the same way as a regular ActiveRecord ``has_one`` 
 
-    john.create_monthly_subscription(origin: { number: "646854345" }, service: { number: "7117", country: "es" })
+    john.create_monthly_subscription(origin: "349123456789", service: "+3477555")
+    => #<Phonify::Subscription :id => "ZNmtqyEcNPpAL8s4qxJv", ...>
+
+Note that the phone numbers must be msisdn (prefixed with country code, area code). Alternatively, if country and carrier information is available, they can be provided
+
+    john.create_monthly_subscription(origin: { number: "9123456789", country: "es", carrier: "movistar" }, service: { number: "77555", country: "es", carrier: "movistar" })
     => #<Phonify::Subscription :id => "ZNmtqyEcNPpAL8s4qxJv", ...>
 
 Sending a message to your user is very simple
