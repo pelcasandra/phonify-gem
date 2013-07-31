@@ -5,7 +5,7 @@ module Phonify::Base
   def self.included(base)
     base.table_name = base.name.gsub(/\W+/, '_').tableize
     base.belongs_to :owner, :polymorphic => true
-    base.send(:attr_accessible, :token, :campaign_id, :owner_id, :owner_type)
+    #base.send(:attr_accessible, :token, :campaign_id, :owner_id, :owner_type)
     base.record_timestamps = false # remove annoying "DEPRECATION WARNING: You're trying to create an attribute `created_at'..."
 
     base.send(:attr_accessor, :remote_attributes)
@@ -15,7 +15,7 @@ module Phonify::Base
 
     base.send(:attr_accessor, *base::REMOTE_ATTRS)
     base::REMOTE_ATTRS.each do |attr_name|
-      base.send(:attr_accessible, attr_name)
+      #base.send(:attr_accessible, attr_name)
       base.send(:define_method, "#{attr_name}=") do |value|
         self.remote_attributes = {} if self.remote_attributes.blank?
         self.remote_attributes[attr_name] = value
