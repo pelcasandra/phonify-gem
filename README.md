@@ -7,6 +7,8 @@ More info on [phonify.io/help](http://www.phonify.io/help).
 
 ## Installation
 
+Rails 4 compatible.
+
 ### Add gem to your Gemfile.
 
     gem "phonify"
@@ -34,29 +36,11 @@ This will generate a config file ``config/initializers/phonify.rb`` where you ca
     # API authentication
     Phonify.config.api_key = 'CHANGEME'
 
-Migration files will also be generated. These tables store the necessary local references. The remaining object attributes will be fetched from phonify.io via API at runtime
+Do not forget to run migrations. 
 
-    create_table :phonify_phones do |t|
-      t.references :owner, :polymorphic => true
-      t.string :campaign_id
-      t.string :token
-    end
+    rake db:migrate
 
-    create_table :phonify_messages do |t|
-      t.references :owner, :polymorphic => true
-      t.integer :subscription_id
-      t.integer :phone_id
-      t.string :campaign_id
-      t.string :token
-    end
-
-    create_table :phonify_subscriptions do |t|
-      t.references :owner, :polymorphic => true
-      t.integer :phone_id
-      t.string :campaign_id
-      t.string :token
-      t.boolean :active
-    end
+These tables store the necessary local references. The remaining object attributes will be fetched from phonify.io via API at runtime
 
 Your current ``app/models/user.rb`` will also be configured to use phonify.io subscription
 
@@ -82,9 +66,10 @@ Which will generate config file ``config/initializers/phonify.rb`` as
 And configure ``app/models/account.rb`` as
 
     class Account < ActiveRecord::Base
-      has_one :monthly_subscription, as: "owner",
-                                       class_name: "Phonify::Subscription",
-                                       conditions: { campaign_id: Phonify.config.monthly }
+      has_one :monthly_subscription, -> { where(campaign_id: Phonify.config.monthly) },
+                                     as: "owner",
+                                     class_name: "Phonify::Subscription"
+                                       
 
 *NOTE:* If you have more than 1 campaign, just add more ``Phonify.config.campaign_name = 'key'`` configs to ``config/initializers/phonify.rb`` and add more ``has_one …`` declarations with different ``campaign_id`` for the ``conditions`` hash.
 
