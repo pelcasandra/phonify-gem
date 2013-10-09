@@ -1,9 +1,9 @@
 class Phonify::Message < ActiveRecord::Base
   REMOTE_ATTRS = [:message, :origin, :destination, :delivered, :amount, :currency, :description, :created_at, :schedule]
-  QUERY_ATTRS = [:campaign_id, :message, :origin, :destination, :sent, :offset, :limit]
+  QUERY_ATTRS = [:app_id, :message, :origin, :destination, :sent, :offset, :limit]
   include Phonify::Base
-  def self.broadcast(campaign_id, message, schedule = nil)
-    api.broadcast(:campaign_id => campaign_id, :message => message, :schedule => schedule)
+  def self.broadcast(app_id, message, schedule = nil)
+    api.broadcast(:app_id => app_id, :message => message, :schedule => schedule)
   end
 
   before_create :find_or_create_token_by_remote_object, :unless => :token?
@@ -11,7 +11,7 @@ class Phonify::Message < ActiveRecord::Base
     create_attributes = { :message => self.remote_attributes[:message],
                           :origin => self.remote_attributes[:origin],
                           :destination => [self.remote_attributes[:destination]],
-                          :campaign_id => self.campaign_id,
+                          :app_id => self.app_id,
                           :schedule => self.remote_attributes[:schedule],
                         }
     self.remote_attributes = self.api.send("create_#{self.api_name}", create_attributes)
@@ -31,9 +31,9 @@ class Phonify::Message < ActiveRecord::Base
       self
     end
     def find_or_create_from(remote_object)
-      if record = @scope.where(:token => remote_object[:id], :campaign_id => remote_object[:campaign_id]).first
+      if record = @scope.where(:token => remote_object[:id], :app_id => remote_object[:app_id]).first
         #
-      else record = @scope.new(:token => remote_object[:id], :campaign_id => remote_object[:campaign_id])
+      else record = @scope.new(:token => remote_object[:id], :app_id => remote_object[:app_id])
         record.remote_attributes = remote_object
         record.save!
       end

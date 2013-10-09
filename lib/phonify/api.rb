@@ -13,7 +13,7 @@ class Phonify::Api
   end
 
   def broadcast(params)
-    json_for request("/v1/campaigns/#{CGI.escape(params[:campaign_id])}/messages", params.except(:campaign_id), Net::HTTP::Post)
+    json_for request("/v1/apps/#{CGI.escape(params[:app_id])}/messages", params.except(:app_id), Net::HTTP::Post)
   end
 
   def messages(params)

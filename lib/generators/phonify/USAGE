@@ -2,7 +2,7 @@ Description:
     Explain the generator
 
 Example:
-    rails generate phonify User --campaign-name=monthly --campaign-key=AAA --api-key=BBB
+    rails generate phonify User --app-name=monthly --app-key=AAA --api-key=BBB
 
     This will create:
         db/migrate/{timestamp}_create_phones.rb
@@ -12,12 +12,12 @@ Example:
     Will add to
         app/models/user.rb
 
-            has_one :monthly_subscription, as: "owner", class_name: "Phonify::Subscription", conditions: { campaign_id: Phonify.config.monthly }
+            has_one :monthly_subscription, as: "owner", class_name: "Phonify::Subscription", conditions: { app_id: Phonify.config.monthly }
 
     Will add config
         config/initializers/phonify.rb
 
-            # Campaign settings
+            # app settings
             Phonify.config.monthly = 'AAA'
             # API authentication
             Phonify.config.api_key = 'BBB'

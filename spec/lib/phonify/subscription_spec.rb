@@ -5,7 +5,7 @@ describe Phonify::Subscription do
     :id => "sub123",
     :origin => { :id => "abc", :number => "111", :country => "es", :carrier => "movistar" },
     :service => { :id => "xyz", :number => "999", :country => "us", :carrier => "att" },
-    :campaign_id => "camp1",
+    :app_id => "camp1",
     :active => false,
     :description => "Lorem ipsum",
     :created_at => 1.day.ago.to_i,
@@ -18,7 +18,7 @@ describe Phonify::Subscription do
   let(:query_params) { {
     :origin => create_attrs[:origin],
     :service => create_attrs[:service],
-    :campaign_id => create_attrs[:campaign_id],
+    :app_id => create_attrs[:app_id],
   } }
   before(:each) do
     @api = mock "Phonify::Api"
@@ -53,7 +53,7 @@ describe Phonify::Subscription do
       @api.should_receive(:subscriptions).with(query_params).and_return([])
       @api.should_receive(:create_subscription).with(create_attrs).and_return([phonify_subscription_attrs])
       old_phone = FactoryGirl.create(:phone, origin_phone_attr.merge({
-        :campaign_id => phonify_subscription_attrs[:campaign_id],
+        :app_id => phonify_subscription_attrs[:app_id],
         :token => origin_phone_attr[:id],
         :id => nil
       }))
@@ -92,7 +92,7 @@ describe Phonify::Subscription do
       let(:phonify_message_attrs) {
         { :id => "msg123",
           :message => "hello world",
-          :campaign_id => "camp123",
+          :app_id => "camp123",
           :origin => { :id => "321", :number => "123", :country => "es", :carrier => "movistar" },
           :destination => { :id => @subscription.phone.token, :number => "567", :country => "es", :carrier => "movistar" },
           :delivered => true,
@@ -104,10 +104,10 @@ describe Phonify::Subscription do
         }
       }
       let(:query_scope_params) { {
-        :origin => @subscription.origin, :destination => { :id => @subscription.phone.token }, :campaign_id => @subscription.campaign_id
+        :origin => @subscription.origin, :destination => { :id => @subscription.phone.token }, :app_id => @subscription.app_id
       } }
       let(:create_scope_params) { {
-        :origin => @subscription.origin, :destination => [{ :id => @subscription.phone.token }], :campaign_id => @subscription.campaign_id
+        :origin => @subscription.origin, :destination => [{ :id => @subscription.phone.token }], :app_id => @subscription.app_id
       } }
       it 'should generate proxy object (no api calls yet)' do
         lambda {

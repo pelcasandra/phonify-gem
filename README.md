@@ -30,8 +30,8 @@ Rails 4 compatible.
 
 This will generate a config file ``config/initializers/phonify.rb`` where you can customize your settings
 
-    # Campaign settings
-    Phonify.config.campaign1 = 'CHANGEME'
+    # App settings
+    Phonify.config.app1 = 'CHANGEME'
 
     # API authentication
     Phonify.config.api_key = 'CHANGEME'
@@ -45,19 +45,19 @@ These tables store the necessary local references. The remaining object attribut
 Your current ``app/models/user.rb`` will also be configured to use phonify.io subscription
 
     class User < ActiveRecord::Base
-      has_one :campaign1_subscription, as: "owner",
+      has_one :app1_subscription, as: "owner",
                                        class_name: "Phonify::Subscription",
-                                       conditions: { campaign_id: Phonify.config.campaign1 }
+                                       conditions: { app_id: Phonify.config.app1 }
 
 ##### Options
 
-You can also be explicit about the user class name, or provide the campaign name, key and your api key directly to the generate command, e.g.
+You can also be explicit about the user class name, or provide the app name, key and your api key directly to the generate command, e.g.
 
-    rails generate phonify Account --campaign-name=monthly --campaign-key=AAA --api-key=BBB
+    rails generate phonify Account --app-name=monthly --app-key=AAA --api-key=BBB
 
 Which will generate config file ``config/initializers/phonify.rb`` as
 
-    # Campaign settings
+    # App settings
     Phonify.config.monthly = 'AAA'
 
     # API authentication
@@ -66,12 +66,12 @@ Which will generate config file ``config/initializers/phonify.rb`` as
 And configure ``app/models/account.rb`` as
 
     class Account < ActiveRecord::Base
-      has_one :monthly_subscription, -> { where(campaign_id: Phonify.config.monthly) },
+      has_one :monthly_subscription, -> { where(app_id: Phonify.config.monthly) },
                                      as: "owner",
                                      class_name: "Phonify::Subscription"
                                        
 
-*NOTE:* If you have more than 1 campaign, just add more ``Phonify.config.campaign_name = 'key'`` configs to ``config/initializers/phonify.rb`` and add more ``has_one …`` declarations with different ``campaign_id`` for the ``conditions`` hash.
+*NOTE:* If you have more than 1 app, just add more ``Phonify.config.app_name = 'key'`` configs to ``config/initializers/phonify.rb`` and add more ``has_one …`` declarations with different ``app_id`` for the ``conditions`` hash.
 
 ### Migrate the database to create the tables.
     
@@ -79,7 +79,7 @@ And configure ``app/models/account.rb`` as
 
 ## Usage
 
-Assuming your user model is ``User`` and campaign name is ``monthly``
+Assuming your user model is ``User`` and app name is ``monthly``
 
     john = User.find(1)
 

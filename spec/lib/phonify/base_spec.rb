@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Phonify::Base do
   describe Phonify::Phone do
-    let(:phonify_phone_attrs) { {:number => "8888", :country => "es", :campaign_id => "007", :description => "Lorem ipsum", :created_at => 1.day.ago.to_i} }
+    let(:phonify_phone_attrs) { {:number => "8888", :country => "es", :app_id => "007", :description => "Lorem ipsum", :created_at => 1.day.ago.to_i} }
     before(:each) do
       @api = mock "Phonify::Api"
       @api.stub!(:phone).and_return(phonify_phone_attrs)
@@ -73,7 +73,7 @@ describe Phonify::Base do
         :country => "us",
         :carrier => "att",
       },
-      :campaign_id => "camp1",
+      :app_id => "app1",
       :delivered => true,
       :amount => "0",
       :currency => "USD",
@@ -113,7 +113,7 @@ describe Phonify::Base do
         :country => "us",
         :carrier => "att",
       },
-      :campaign_id => "camp1",
+      :app_id => "app1",
       :active => true,
       :description => "Lorem ipsum",
       :created_at => 1.day.ago.to_i,

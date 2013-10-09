@@ -17,11 +17,11 @@ describe Phonify::Api do
       end
     end
     describe '#broadcast' do
-      it 'should call /v1/campaigns/{CAMPAIGN_ID}/messages' do
-        attrs = { :message => "this is sms", :campaign_id => "camp-#{rand(100)}", :schedule => 3.days.since.to_i }
+      it 'should call /v1/apps/{APP_ID}/messages' do
+        attrs = { :message => "this is sms", :app_id => "app-#{rand(100)}", :schedule => 3.days.since.to_i }
         @http.should_receive(:request) do |req|
           req.method.should == 'POST'
-          req.path.should == "/v1/campaigns/" + CGI.escape(attrs[:campaign_id]) + "/messages"
+          req.path.should == "/v1/apps/" + CGI.escape(attrs[:app_id]) + "/messages"
           req['authorization'].should == nil
           response200
         end
@@ -75,7 +75,7 @@ describe Phonify::Api do
     end
     describe '#create_message' do
       it 'should POST /v1/messages' do
-        params = { :campaign_id => "abc", :message => "Hello world", :origin => { :id => "123" }, :destination => [{ :id => "456 "}] }
+        params = { :app_id => "abc", :message => "Hello world", :origin => { :id => "123" }, :destination => [{ :id => "456 "}] }
         @http.should_receive(:request) do |req|
           req.method.should == 'POST'
           req.path.should == '/v1/messages'
@@ -87,7 +87,7 @@ describe Phonify::Api do
     end
     describe '#create_subscription' do
       it 'should POST /v1/subscriptions' do
-        params = { :campaign_id => "abc", :origin => { :id => "123" }, :service => { :id => "456 "} }
+        params = { :app_id => "abc", :origin => { :id => "123" }, :service => { :id => "456 "} }
         @http.should_receive(:request) do |req|
           req.method.should == 'POST'
           req.path.should == '/v1/subscriptions'
@@ -121,7 +121,7 @@ describe Phonify::Api do
     end
     describe '#subscriptions' do
       it 'should GET /v1/subscriptions' do
-        params = { :campaign_id => "campaign123" }
+        params = { :app_id => "app123" }
         @http.should_receive(:request) do |req|
           req.method.should == 'GET'
           req.path.should == '/v1/subscriptions?' + Phonify::Api.send(:new).params2query(params)

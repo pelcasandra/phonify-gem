@@ -4,7 +4,7 @@ describe Phonify::Message do
   let(:phonify_message_attrs) {
     { :id => "msg123",
       :message => "hello world",
-      :campaign_id => "camp123",
+      :app_id => "app123",
       :origin => { :number => "123", :country => "es", :carrier => "movistar" },
       :destination => { :number => "567", :country => "es", :carrier => "movistar" },
       :delivered => true,
@@ -21,9 +21,9 @@ describe Phonify::Message do
   end
   describe '#broadcast' do
     it 'should work' do
-      attrs = { :message => "this is sms", :campaign_id => "camp-#{rand(100)}", :schedule => 3.days.since.to_i }
+      attrs = { :message => "this is sms", :app_id => "app-#{rand(100)}", :schedule => 3.days.since.to_i }
       @api.should_receive(:broadcast).with(attrs)
-      Phonify::Message.broadcast(attrs[:campaign_id], attrs[:message], attrs[:schedule])
+      Phonify::Message.broadcast(attrs[:app_id], attrs[:message], attrs[:schedule])
     end
   end
   describe '#create' do
@@ -32,7 +32,7 @@ describe Phonify::Message do
       params = { :message => attrs[:message],
                  :origin => attrs[:origin],
                  :destination => [attrs[:destination]],
-                 :campaign_id => attrs[:campaign_id],
+                 :app_id => attrs[:app_id],
                  :schedule => attrs[:schedule],
                }
       @api.should_receive(:create_message).with(params).and_return(phonify_message_attrs)
