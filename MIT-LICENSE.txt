@@ -1,4 +1,4 @@
-Copyright (c) 2012 choonkeat
+Copyright (c) 2013 Phonify.io
 
 MIT License
 

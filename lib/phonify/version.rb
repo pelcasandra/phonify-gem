@@ -1,3 +1,3 @@
 module Phonify
-  VERSION = "1.0.0" unless defined?(::Phonify::VERSION)
+  VERSION = '1.0.1'
 end
