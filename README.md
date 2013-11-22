@@ -7,7 +7,7 @@ Phonify gem adds the power of Phonify service directly in your app. More info on
 
 Framework independent.
 
-### Add gem to your Gemfile.
+### Add gem to your Gemfile
 
     gem 'phonify'
 
@@ -17,14 +17,14 @@ Framework independent.
 
 ## Usage
 
-Configure your token
+Configure your token:
     
-    Phonify.config.token = 'TOKEN'
+    Phonify.token = 'TOKEN'
 
-Check if the subscription is active
+Check if the subscription is active:
 
     Phonify.subscription_active? '1234', '+34670000000', 'KEYWORD'
 
-Send subscription message
+Send subscription message:
 
     Phonify.send_subscription_message '1234', '+34670000000', 'KEYWORD', 'BODY'
