@@ -23,8 +23,8 @@ Configure your token:
 
 Check if the subscription is active:
 
-    Phonify.subscription_active? '1234', '+34670000000', 'KEYWORD'
+    Phonify.subscription_active? 'APP', '+34670000000'
 
 Send subscription message:
 
-    Phonify.send_subscription_message '1234', '+34670000000', 'KEYWORD', 'BODY'
+    Phonify.send_subscription_message 'APP', '+34670000000', 'BODY'
