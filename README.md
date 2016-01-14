@@ -9,7 +9,7 @@ Framework independent.
 
 ### Add gem to your Gemfile
 
-    gem 'phonify'
+    gem 'phonify', github: 'pelcasandra/github'
 
 ### Install the gem
 
@@ -23,8 +23,8 @@ Configure your token:
 
 Check if the subscription is active:
 
-    Phonify.subscription_active? 'APP', '+34670000000'
+    Phonify.subscription_active? 'APP_TOKEN', '+34670000000'
 
 Send subscription message:
 
-    Phonify.send_subscription_message 'APP', '+34670000000', 'BODY'
+    Phonify.send_subscription_message 'APP_TOKEN', '+34670000000', 'BODY'
