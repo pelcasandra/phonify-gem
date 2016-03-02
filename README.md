@@ -19,7 +19,7 @@ Framework independent.
 
 Configure your api and app tokens:
     
-    Phonify.token = 'TOKEN'
+    Phonify.api_key = 'TOKEN'
     Phonify.app = 'TOKEN'
 
 ### Messages    

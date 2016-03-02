@@ -5,7 +5,7 @@ require 'json'
 module Phonify
   class << self
 
-    attr_accessor :token
+    attr_accessor :api_key
    
     def send_subscription_message(app, phone, body)
       response = post('v1/subscriptions/messages', app: app, to: phone, body: body)
@@ -20,7 +20,7 @@ module Phonify
     private
 
     def request(path, params)
-      params[:token] = token
+      params[:api_key] = api_key
       response = yield("http://api.phonify.io/#{path}")
       JSON.parse(response.body, symbolize_names: true) if response and response.code == '200'
     end
