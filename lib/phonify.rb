@@ -14,7 +14,7 @@ module Phonify
 
     def subscription_active?(app, phone)
       response = get('v1/subscriptions/active', app: app, to: phone)
-      response ? response[:active] : false
+      response ? response[:subscribed] : false
     end
     
     private
