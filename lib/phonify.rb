@@ -8,12 +8,12 @@ module Phonify
     attr_accessor :token
    
     def send_subscription_message(app, phone, body)
-      response = post('v1/subscriptions/messages', app: app, phone: phone, body: body)
+      response = post('v1/subscriptions/messages', app: app, to: phone, body: body)
       response ? response[:id] : false
     end
 
     def subscription_active?(app, phone)
-      response = get('v1/subscriptions/active', app: app, phone: phone)
+      response = get('v1/subscriptions/active', app: app, to: phone)
       response ? response[:active] : false
     end
     
