@@ -7,8 +7,8 @@ module Phonify
 
     attr_accessor :api_key
    
-    def send_subscription_message(app, phone, body)
-      response = post('v1/subscriptions/messages', app: app, to: phone, body: body)
+    def send_subscription_message(app, phone, body, options = {})
+      response = post('v1/subscriptions/messages', app: app, to: phone, body: body, free: options[:free])
       response ? response[:id] : false
     end
 
