@@ -16,6 +16,11 @@ module Phonify
       response = get('v1/subscriptions/active', app: app, to: phone)
       response ? response[:subscribed] : false
     end
+
+    def subscription_billable?(app, phone)
+      response = get('v1/subscriptions/billable', app: app, to: phone)
+      response ? response[:billable] : false
+    end    
     
     private
 
