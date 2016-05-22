@@ -27,22 +27,22 @@ Configure your api and app tokens:
 Response
 
     {
-      "message":
+      message:
         {
-          "id": "ch_0UVaSlPypmXHLS",
-          "body": "This is a message",
-          "to": "+14560000000",
-          "phone": {
-            "id": "ch_0UVaSlPypmXHLS",
-            "number": "4560000000",
-            "country": "US",
-            "carrier": "att",
+          id: "ch_0UVaSlPypmXHLS",
+          body: "This is a message",
+          to: "+14560000000",
+          phone: {
+            id: "ch_0UVaSlPypmXHLS",
+            number: "4560000000",
+            country: "US",
+            carrier: "att",
           },
-          "app_id": "Asy_1KP3NNslAeBGhhjV",
-          "sent": true,
-          "amount": "0",
-          "currency": "USD",
-          "created_at": "2015-07-16T07:56:06.902Z"
+          app_id: "Asy_1KP3NNslAeBGhhjV",
+          state: "sent",
+          end_price: 0,
+          currency: "USD",
+          created_at: "2015-07-16T07:56:06.902Z"
       }
     }
 
@@ -56,10 +56,10 @@ Response
 Response
 
     {
-      "msisdn":"+14560000000",
-      "app_id":"KW9Aqn84ijagK6zseB5N",
-      "state":"initiated",
-      "description": "Code sent to +14560000000."
+      msisdn: "+14560000000",
+      app_id: "KW9Aqn84ijagK6zseB5N",
+      state: "initiated",
+      description: "Code sent to +14560000000."
     }
 
 #### Verify
@@ -69,11 +69,11 @@ Response
 Response
 
     {
-      "msisdn":"+14560000000",
-      "app_id":"KW9Aqn84ijagK6zseB5N",
-      "subscription_id":"4g_oYIXRP6hRrUO0t9C",
-      "authentication_token":"fclcw33ywA993tk5s1fs4n54d2ZjgA4r6xf3k4sA1cxw6926gckz2Ajxnz6n79Astl4fqbsnms4Adm1",
-      "state":"verified"
+      msisdn: "+14560000000",
+      app_id: "KW9Aqn84ijagK6zseB5N",
+      subscription_id: "4g_oYIXRP6hRrUO0t9C",
+      authentication_token: "fclcw33ywA993tk5s1fs4n54d2ZjgA4r6xf3k4sA1cxw6926gckz2Ajxnz6n79Astl4fqbsnms4Adm1",
+      state: "verified"
     }
 
 #### Authenticate
@@ -83,42 +83,58 @@ Response
 Response
 
     {
-      "msisdn":"+14560000000",
-      "app_id":"KW9Aqn84ijagK6zseB5N",
-      "subscription_id":"4g_oYIXRP6hRrUO0t9C",
-      "state":"verified"
+      msisdn: "+14560000000",
+      app_id: "KW9Aqn84ijagK6zseB5N",
+      subscription_id: "4g_oYIXRP6hRrUO0t9C",
+      state: "verified"
     }
 
 ### Find messages
 
 #### Single message
 
-    Phonify.find_message '+14560000000', '1234'
+    Phonify.find_message '+14560000000'
 
 Response
 
     {
-      "message":
-        {
-          "id": "ch_0UVaSlPypmXHLS",
-          "body": "This is a message",
-          "to": "+14560000000",
-          "phone": {
-            "id": "ch_0UVaSlPypmXHLS",
-            "number": "4560000000",
-            "country": "US",
-            "carrier": "att",
-          },
-          "app_id": "Asy_1KP3NNslAeBGhhjV",
-          "sent": true,
-          "currency": "USD",
-          "created_at": "2015-07-16T07:56:06.902Z"
+      message: {
+        id: "ch_0UVaSlPypmXHLS",
+        body: "This is a message",
+        to: "+14560000000",
+        phone: {
+          id: "ch_0UVaSlPypmXHLS",
+          number: "4560000000",
+          country: "US",
+          carrier: "att",
+        },
+        state: "sent",
+        end_price: 0,
+        currency: "USD",
+        app_id: "Asy_1KP3NNslAeBGhhjV",      
+        created_at: "2015-07-16T07:56:06.902Z"
       }
     }
 
 #### All messages
 
     Phonify.messages
+
+    {
+      messages: [
+      {
+        id: "ch_0UVaSlPypmXHLS",
+        body: "This is a message",
+        to: "+14560000000",
+        phone: { ... } ,
+        state: "sent",
+        end_price: 0,
+        currency: "USD",
+        app_id: "Asy_1KP3NNslAeBGhhjV",      
+        created_at: "2015-07-16T07:56:06.902Z"
+      },
+      { ... } ]
+    }    
 
 Returns array of messages
 
@@ -131,24 +147,39 @@ Returns array of messages
 Returns
 
     { 
-      "phone":
-       {
-        "id": "ch_0UVaSlPypmXHLS",
-        "msisdn": "+14560000000",                              
-        "number": 4560000000,
-        "country": "US",
-        "carrier": "movistar",
-        "app_id": "Asy_1KP3NNslAeBGhhjV",
-        "state": "subscribed",
-        "affiliate": "",
-        "track": "",
-        "created_at": "2015-07-16T07:56:06.902Z"
+      phone: {
+        id: "ch_0UVaSlPypmXHLS",
+        msisdn: "+14560000000",                              
+        number: 4560000000,
+        country: "US",
+        carrier: "movistar",
+        state: "verified",
+        affiliate: "",
+        track: "",
+        app_id: "Asy_1KP3NNslAeBGhhjV",      
+        created_at: "2015-07-16T07:56:06.902Z"
       }
     }
 
 #### All phones
 
     Phonify.phones
+
+    { 
+      phones: [
+      {
+        id: "ch_0UVaSlPypmXHLS",
+        msisdn: "+14560000000",                              
+        number: 4560000000,
+        country: "US",
+        carrier: "movistar",
+        state: "verified",
+        affiliate: "",
+        track: "",
+        app_id: "Asy_1KP3NNslAeBGhhjV",      
+        created_at: "2015-07-16T07:56:06.902Z"
+      } ]
+    }    
 
 Returns array of phones.
 

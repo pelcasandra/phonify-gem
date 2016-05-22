@@ -9,28 +9,29 @@ describe Phonify do
 
   before do
     Phonify.api_key = api_key
+    Phonify.app = app
   end
 
-  describe '#send_message' do
+  describe '#send_message', focus: true do
     let(:body) { 'body' }
-    let(:response) { mock(code: '200', body: { id: 10 }.to_json) }    
+    let(:response) { mock(code: '200', body: { message: { id: 10 } }.to_json) } 
 
     it 'call post_form with the appropiate parameters' do
       Net::HTTP.stub('post_form').and_return(response)
       Net::HTTP.should_receive('post_form').with(URI('http://api.phonify.io/v1/messages'), app: app, to: phone, body: body, free: nil, api_key: api_key)
-      expect(Phonify.send_subscription_message(app, phone, body)).to eq(10)
+      expect(Phonify.send_message(phone, body)[:message][:id]).to eq(10)
     end
   end
 
-  describe '#subscription_active?' do
-    let(:response) { mock(code: '200', body: { subscribed: true }.to_json) }
+  # describe '#subscription_active?' do
+  #   let(:response) { mock(code: '200', body: { subscribed: true }.to_json) }
 
-    it "call get_response with the appropriate parameters" do
-      Net::HTTP.stub('get_response').and_return(response)
-      Net::HTTP.should_receive('get_response').with(URI("http://api.phonify.io/v1/subscriptions/active?app=#{app}&to=#{phone}&api_key=#{api_key}"))
-      expect(Phonify.subscription_active?(app, phone)).to eq(true)
-    end
-  end
+  #   it "call get_response with the appropriate parameters" do
+  #     Net::HTTP.stub('get_response').and_return(response)
+  #     Net::HTTP.should_receive('get_response').with(URI("http://api.phonify.io/v1/subscriptions/active?app=#{app}&to=#{phone}&api_key=#{api_key}"))
+  #     expect(Phonify.subscription_active?(app, phone)).to eq(true)
+  #   end
+  # end
 
   describe '#verify' do
     let(:response) { mock(code: '200', body: { authentication_token: authentication_token, state: 'verified', code: code }.to_json) }
@@ -38,7 +39,7 @@ describe Phonify do
     it "call get_response with the appropriate parameters" do
       Net::HTTP.stub('post_form').and_return(response)
       Net::HTTP.should_receive('post_form').with(URI('http://api.phonify.io/v1/verify'), app: app, msisdn: phone, code: code, api_key: api_key)
-      expect(Phonify.verify(app, phone, code)[:authentication_token]).to eq(authentication_token)
+      expect(Phonify.verify(phone, code)[:authentication_token]).to eq(authentication_token)
     end
   end  
 
@@ -48,7 +49,7 @@ describe Phonify do
     it "call get_response with the appropriate parameters" do
       Net::HTTP.stub('post_form').and_return(response)
       Net::HTTP.should_receive('post_form').with(URI('http://api.phonify.io/v1/authenticate'), app: app, auth_token: authentication_token, api_key: api_key)
-      expect(Phonify.authenticate(app, authentication_token)[:authentication_token]).to eq(authentication_token)
+      expect(Phonify.authenticate(authentication_token)[:authentication_token]).to eq(authentication_token)
     end
   end
 end
