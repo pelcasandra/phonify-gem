@@ -56,10 +56,19 @@ Response
 Response
 
     {
-      msisdn: "+14560000000",
-      app_id: "KW9Aqn84ijagK6zseB5N",
-      state: "initiated",
-      description: "Code sent to +14560000000."
+      device: { 
+        id: "KW9Aqn84ijagK6zseB5N",
+        msisdn: "+14560000000",
+        app_id: "KW9Aqn84ijagK6zseB5N",
+        state: "initiated",
+        description: "Code sent to +14560000000.",  
+        phone: {
+          id: "ch_0UVaSlPypmXHLS",
+          number: "4560000000",
+          country: "US",
+          carrier: "att",
+        }
+      }
     }
 
 #### Verify
@@ -78,7 +87,7 @@ Response
 
 #### Authenticate
 
-    Phonify.authenticate '+14560000000', '1234'
+    Phonify.authenticate 'fclcw33ywA993tk5s1fs4n54d2ZjgA4r6xf3k4sA1cxw6926gckz2Ajxnz6n79Astl4fqbsnms4Adm1'
 
 Response
 
@@ -140,7 +149,7 @@ Returns array of messages
 
 ### Find phones
 
-#### Single message
+#### Single phone
 
     Phonify.find_message '+14560000000'
 
