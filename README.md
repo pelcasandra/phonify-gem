@@ -31,7 +31,7 @@ Phonify.app = 'TOKEN'
 ### Send message
 
 ```ruby
-Phonify.send_message '+14560000000', 'BODY'
+Phonify.send_message '+14560000000', 'As above, so below.'
 ```
 
 Response
@@ -41,15 +41,15 @@ Response
   message:
     {
       id: "ch_0UVaSlPypmXHLS",
-      body: "This is a message",
+      body: "As above, so below.",
       to: "+14560000000",
       phone: {
-        id: "ch_0UVaSlPypmXHLS",
+        id: "XFqa5g0_XRQixL0chXDF,
         number: "4560000000",
         country: "US",
         carrier: "att",
       },
-      app_id: "Asy_1KP3NNslAeBGhhjV",
+      app_id: "KW9Aqn84ijagK6zseB5N",
       state: "sent",
       end_price: 0,
       currency: "USD",
@@ -57,7 +57,6 @@ Response
   }
 }
 ```
-
 
 ### Verify
 
@@ -72,13 +71,13 @@ Response
 ```ruby
 {
   device: { 
-    id: "KW9Aqn84ijagK6zseB5N",
+    id: "y4cFCPg2Y0D_CcPAwBOW",
     msisdn: "+14560000000",
     app_id: "KW9Aqn84ijagK6zseB5N",
     state: "initiated",
     description: "Code sent to +14560000000.",  
     phone: {
-      id: "ch_0UVaSlPypmXHLS",
+      id: "XFqa5g0_XRQixL0chXDF",
       number: "4560000000",
       country: "US",
       carrier: "att",
@@ -97,9 +96,14 @@ Response
 
 ```ruby
 {
-  msisdn: "+14560000000",
   app_id: "KW9Aqn84ijagK6zseB5N",
-  phone_id: "4g_oYIXRP6hRrUO0t9C",
+  phone: {
+    id: "XFqa5g0_XRQixL0chXDF",
+    msisdn: "+14560000000",    
+    number: "4560000000",
+    country: "US",
+    carrier: "att",
+  },
   authentication_token: "fclcw33ywA993tk5s1fs4n54d2ZjgA4r6xf3k4sA1cxw6926gckz2Ajxnz6n79Astl4fqbsnms4Adm1",
   state: "verified"
 }
@@ -115,9 +119,14 @@ Response
 
 ```ruby
 {
-  msisdn: "+14560000000",
   app_id: "KW9Aqn84ijagK6zseB5N",
-  phone_id: "4g_oYIXRP6hRrUO0t9C",
+  phone: {
+    id: "XFqa5g0_XRQixL0chXDF",
+    msisdn: "+14560000000",    
+    number: "4560000000",
+    country: "US",
+    carrier: "att",
+  },
   state: "verified"
 }
 ```
@@ -136,10 +145,10 @@ Response
 {
   message: {
     id: "ch_0UVaSlPypmXHLS",
-    body: "This is a message",
+    body: "As above, so below.",
     to: "+14560000000",
     phone: {
-      id: "ch_0UVaSlPypmXHLS",
+      id: "XFqa5g0_XRQixL0chXDF",
       number: "4560000000",
       country: "US",
       carrier: "att",
@@ -147,7 +156,7 @@ Response
     state: "sent",
     end_price: 0,
     currency: "USD",
-    app_id: "Asy_1KP3NNslAeBGhhjV",      
+    app_id: "KW9Aqn84ijagK6zseB5N",      
     created_at: "2015-07-16T07:56:06.902Z"
   }
 }
@@ -166,13 +175,13 @@ Response
   messages: [
   {
     id: "ch_0UVaSlPypmXHLS",
-    body: "This is a message",
+    body: "As above, so below.",
     to: "+14560000000",
     phone: { ... } ,
     state: "sent",
     end_price: 0,
     currency: "USD",
-    app_id: "Asy_1KP3NNslAeBGhhjV",      
+    app_id: "KW9Aqn84ijagK6zseB5N",      
     created_at: "2015-07-16T07:56:06.902Z"
   },
   { ... } ]
@@ -194,7 +203,7 @@ Returns
 ```ruby
 { 
   phone: {
-    id: "4g_oYIXRP6hRrUO0t9C",
+    id: "XFqa5g0_XRQixL0chXDF",
     msisdn: "+14560000000",                              
     number: 4560000000,
     country: "US",
@@ -202,7 +211,7 @@ Returns
     state: "verified",
     affiliate: "",
     track: "",
-    app_id: "Asy_1KP3NNslAeBGhhjV",      
+    app_id: "KW9Aqn84ijagK6zseB5N",      
     created_at: "2015-07-16T07:56:06.902Z"
   }
 }
@@ -220,7 +229,7 @@ Response
 { 
   phones: [
   {
-    id: "ch_0UVaSlPypmXHLS",
+    id: "XFqa5g0_XRQixL0chXDF",
     msisdn: "+14560000000",                              
     number: 4560000000,
     country: "US",
@@ -228,7 +237,7 @@ Response
     state: "verified",
     affiliate: nil,
     track: nil,
-    app_id: "Asy_1KP3NNslAeBGhhjV",      
+    app_id: "KW9Aqn84ijagK6zseB5N",      
     created_at: "2015-07-16T07:56:06.902Z"
   } ]
 }   
