@@ -151,13 +151,13 @@ Returns array of messages
 
 #### Single phone
 
-    Phonify.find_message '+14560000000'
+    Phonify.find_phone '4g_oYIXRP6hRrUO0t9C'
 
 Returns
 
     { 
       phone: {
-        id: "ch_0UVaSlPypmXHLS",
+        id: "4g_oYIXRP6hRrUO0t9C",
         msisdn: "+14560000000",                              
         number: 4560000000,
         country: "US",
