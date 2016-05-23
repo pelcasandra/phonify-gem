@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pry'
 
 describe Phonify do
   let(:app) { 'app' }
@@ -22,6 +23,17 @@ describe Phonify do
       expect(Phonify.send_message(phone, body)[:message][:id]).to eq(10)
     end
   end
+
+  describe '#find_message', focus: true do
+    let(:id) { '10' }
+    let(:response) { mock(code: '200', body: { message: { id: id } }.to_json) } 
+
+    it "call get_response with the appropriate parameters" do
+      Net::HTTP.stub('get_response').and_return(response)
+      Net::HTTP.should_receive('get_response').with(URI("http://api.phonify.io/v1/messages/#{id}?api_key=#{api_key}&app=#{app}"))
+      expect(Phonify.find_message(id)[:message][:id]).to eq('10')
+    end
+  end  
 
   # describe '#subscription_active?' do
   #   let(:response) { mock(code: '200', body: { subscribed: true }.to_json) }

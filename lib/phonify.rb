@@ -12,7 +12,7 @@ module Phonify
     end
 
     def find_message(id)
-      post('v1/messages', id: id)
+      get("v1/messages/#{id}")
     end
 
     def messages(options = {})
@@ -20,10 +20,10 @@ module Phonify
     end
 
     def find_phone(id)
-      get('v1/subscriptions/', to: phone)
+      get('v1/subscriptions/', id: id)
     end
 
-    def phones(id)
+    def phones(options = {})
       get('v1/subscriptions/', to: phone)
     end
 
@@ -45,14 +45,14 @@ module Phonify
       params[:api_key] = api_key
       params[:app] = app
       response = yield("http://api.phonify.io/#{path}")
-      JSON.parse(response.body, symbolize_names: true) if response and response.code == '200'
+      JSON.parse(response.body, symbolize_names: true) if response
     end
 
-    def post(path, params)
+    def post(path, params = {})
       request(path, params) { |url| Net::HTTP.post_form URI(url), params }
     end
 
-    def get(path, params)
+    def get(path, params = {})
       request(path, params) { |url| Net::HTTP.get_response URI("#{url}?#{URI.encode_www_form(params.to_a)}") }
     end
   end
