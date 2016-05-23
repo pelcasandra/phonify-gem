@@ -80,7 +80,7 @@ Response
     {
       msisdn: "+14560000000",
       app_id: "KW9Aqn84ijagK6zseB5N",
-      subscription_id: "4g_oYIXRP6hRrUO0t9C",
+      phone_id: "4g_oYIXRP6hRrUO0t9C",
       authentication_token: "fclcw33ywA993tk5s1fs4n54d2ZjgA4r6xf3k4sA1cxw6926gckz2Ajxnz6n79Astl4fqbsnms4Adm1",
       state: "verified"
     }
@@ -94,7 +94,7 @@ Response
     {
       msisdn: "+14560000000",
       app_id: "KW9Aqn84ijagK6zseB5N",
-      subscription_id: "4g_oYIXRP6hRrUO0t9C",
+      phone_id: "4g_oYIXRP6hRrUO0t9C",
       state: "verified"
     }
 
@@ -161,7 +161,7 @@ Returns
         msisdn: "+14560000000",                              
         number: 4560000000,
         country: "US",
-        carrier: "movistar",
+        carrier: "att",
         state: "verified",
         affiliate: "",
         track: "",
@@ -181,10 +181,10 @@ Returns
         msisdn: "+14560000000",                              
         number: 4560000000,
         country: "US",
-        carrier: "movistar",
+        carrier: "att",
         state: "verified",
-        affiliate: "",
-        track: "",
+        affiliate: nil,
+        track: nil,
         app_id: "Asy_1KP3NNslAeBGhhjV",      
         created_at: "2015-07-16T07:56:06.902Z"
       } ]
