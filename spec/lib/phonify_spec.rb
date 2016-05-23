@@ -7,31 +7,43 @@ describe Phonify do
   let(:api_key) { 'api_key' }
   let(:authentication_token) { '1234567890' }
   let(:code) { 'code' }
+  let(:id) { '10' }  
 
   before do
     Phonify.api_key = api_key
     Phonify.app = app
   end
 
-  describe '#send_message', focus: true do
-    let(:body) { 'body' }
-    let(:response) { mock(code: '200', body: { message: { id: 10 } }.to_json) } 
-
-    it 'call post_form with the appropiate parameters' do
-      Net::HTTP.stub('post_form').and_return(response)
-      Net::HTTP.should_receive('post_form').with(URI('http://api.phonify.io/v1/messages'), app: app, to: phone, body: body, free: nil, api_key: api_key)
-      expect(Phonify.send_message(phone, body)[:message][:id]).to eq(10)
-    end
-  end
-
-  describe '#find_message', focus: true do
-    let(:id) { '10' }
+  context 'messages' do
     let(:response) { mock(code: '200', body: { message: { id: id } }.to_json) } 
+    
+    describe '#send_message' do
+      let(:body) { 'body' }
 
-    it "call get_response with the appropriate parameters" do
-      Net::HTTP.stub('get_response').and_return(response)
-      Net::HTTP.should_receive('get_response').with(URI("http://api.phonify.io/v1/messages/#{id}?api_key=#{api_key}&app=#{app}"))
-      expect(Phonify.find_message(id)[:message][:id]).to eq('10')
+      it 'call post_form with the appropiate parameters' do
+        Net::HTTP.stub('post_form').and_return(response)
+        Net::HTTP.should_receive('post_form').with(URI('http://api.phonify.io/v1/messages'), app: app, to: phone, body: body, free: nil, api_key: api_key)
+        expect(Phonify.send_message(phone, body)[:message][:id]).to eq('10')
+      end
+    end
+
+    describe '#find_message' do
+      it "call get_response with the appropriate parameters" do
+        Net::HTTP.stub('get_response').and_return(response)
+        Net::HTTP.should_receive('get_response').with(URI("http://api.phonify.io/v1/messages/#{id}?api_key=#{api_key}&app=#{app}"))
+        expect(Phonify.find_message(id)[:message][:id]).to eq('10')
+      end
+    end
+
+    describe '#messages', focus: true do
+      let(:messages) { [{ id: id }, { id: id }] }
+      let(:response) { mock(code: '200', body: { messages: messages }.to_json) } 
+
+      it "call get_response with the appropriate parameters" do
+        Net::HTTP.stub('get_response').and_return(response)
+        Net::HTTP.should_receive('get_response').with(URI("http://api.phonify.io/v1/messages?offset&limit&api_key=#{api_key}&app=#{app}"))
+        expect(Phonify.messages[:messages]).to match_array(messages)
+      end
     end
   end  
 

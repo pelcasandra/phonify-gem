@@ -16,7 +16,7 @@ module Phonify
     end
 
     def messages(options = {})
-      post('v1/messages', offset: options[:offset], limit: options[:limit])
+      get('v1/messages', offset: options[:offset], limit: options[:limit])
     end
 
     def find_phone(id)
