@@ -1,6 +1,7 @@
 require 'net/http'
 require 'uri'
 require 'json'
+require 'pry'
 
 module Phonify
   class << self
@@ -8,7 +9,7 @@ module Phonify
     attr_accessor :api_key, :app
    
     def send_message(phone, body, options = {})
-      post('v1/messages', to: phone, body: body, free: options[:free])
+      post('v1/messages', { to: phone, body: body }.merge(options))
     end
 
     def find_message(id)
@@ -16,27 +17,27 @@ module Phonify
     end
 
     def messages(options = {})
-      get('v1/messages', offset: options[:offset], limit: options[:limit])
+      get('v1/messages', options)
     end
 
     def find_phone(id)
-      get('v1/subscriptions/', id: id)
+      get("v1/subscriptions/#{id}")
     end
 
     def phones(options = {})
-      get('v1/subscriptions/', to: phone)
+      get('v1/subscriptions', options)
     end
 
     def verify(phone, code = nil)
       post('v1/verify', msisdn: phone, code: code)
     end
 
-    def authenticate(auth_token)
-      post('v1/authenticate', auth_token: auth_token)
+    def authenticate(authentication_token)
+      post('v1/authenticate', authentication_token: authentication_token)
     end
 
-    def cancel(id)
-      get('v1/cancel/', to: phone)
+    def unsubscribe(id)
+      post("v1/subscriptions/unsubscribe")
     end
     
     private
@@ -44,7 +45,7 @@ module Phonify
     def request(path, params)
       params[:api_key] = api_key
       params[:app] = app
-      response = yield("http://api.phonify.io/#{path}")
+      response = yield("https://api.phonify.io/#{path}")
       JSON.parse(response.body, symbolize_names: true) if response
     end
 

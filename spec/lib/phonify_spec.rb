@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'pry'
+#require 'pry'
 
 describe Phonify do
   let(:app) { 'app' }
@@ -7,73 +7,82 @@ describe Phonify do
   let(:api_key) { 'api_key' }
   let(:authentication_token) { '1234567890' }
   let(:code) { 'code' }
-  let(:id) { '10' }  
+  let(:id) { '10' }
+  let(:limit) { '5' }
+  let(:offset) { '5' }
+  let(:params) { nil }
+  let(:action) { 'get_response' }  
 
   before do
     Phonify.api_key = api_key
     Phonify.app = app
+    Net::HTTP.stub(action).and_return(response)
   end
 
-  context 'messages' do
-    let(:response) { mock(code: '200', body: { message: { id: id } }.to_json) } 
+  describe 'Messages' do
+    let(:response) { mock(code: '200', body: { message: { id: id } }.to_json) }
     
     describe '#send_message' do
       let(:body) { 'body' }
+      let(:action) { 'post_form' }
 
-      it 'call post_form with the appropiate parameters' do
-        Net::HTTP.stub('post_form').and_return(response)
-        Net::HTTP.should_receive('post_form').with(URI('http://api.phonify.io/v1/messages'), app: app, to: phone, body: body, free: nil, api_key: api_key)
-        expect(Phonify.send_message(phone, body)[:message][:id]).to eq('10')
-      end
+      before { Net::HTTP.should_receive(action).with(URI('https://api.phonify.io/v1/messages'), app: app, to: phone, body: body, api_key: api_key) }
+
+      it { expect(Phonify.send_message(phone, body)[:message][:id]).to eq('10') }
     end
 
     describe '#find_message' do
-      it "call get_response with the appropriate parameters" do
-        Net::HTTP.stub('get_response').and_return(response)
-        Net::HTTP.should_receive('get_response').with(URI("http://api.phonify.io/v1/messages/#{id}?api_key=#{api_key}&app=#{app}"))
-        expect(Phonify.find_message(id)[:message][:id]).to eq('10')
-      end
+      before { Net::HTTP.should_receive(action).with(URI("https://api.phonify.io/v1/messages/#{id}?api_key=#{api_key}&app=#{app}")) }
+
+      it { expect(Phonify.find_message(id)[:message][:id]).to eq('10') }
     end
 
-    describe '#messages', focus: true do
+    describe '#messages' do
       let(:messages) { [{ id: id }, { id: id }] }
       let(:response) { mock(code: '200', body: { messages: messages }.to_json) } 
 
-      it "call get_response with the appropriate parameters" do
-        Net::HTTP.stub('get_response').and_return(response)
-        Net::HTTP.should_receive('get_response').with(URI("http://api.phonify.io/v1/messages?offset&limit&api_key=#{api_key}&app=#{app}"))
-        expect(Phonify.messages[:messages]).to match_array(messages)
-      end
+      before { Net::HTTP.should_receive(action).with(URI("https://api.phonify.io/v1/messages?limit=#{limit}&offset=#{offset}&api_key=#{api_key}&app=#{app}")) }
+
+      it { expect(Phonify.messages(limit: limit, offset: offset)[:messages]).to match_array(messages) }
     end
-  end  
+  end
 
-  # describe '#subscription_active?' do
-  #   let(:response) { mock(code: '200', body: { subscribed: true }.to_json) }
+  describe 'Phones' do
+    let(:response) { mock(code: '200', body: { phone: { id: id } }.to_json) } 
 
-  #   it "call get_response with the appropriate parameters" do
-  #     Net::HTTP.stub('get_response').and_return(response)
-  #     Net::HTTP.should_receive('get_response').with(URI("http://api.phonify.io/v1/subscriptions/active?app=#{app}&to=#{phone}&api_key=#{api_key}"))
-  #     expect(Phonify.subscription_active?(app, phone)).to eq(true)
-  #   end
-  # end
+    describe '#find_phone' do
+      before { Net::HTTP.should_receive(action).with(URI("https://api.phonify.io/v1/subscriptions/#{id}?api_key=#{api_key}&app=#{app}")) }
 
-  describe '#verify' do
-    let(:response) { mock(code: '200', body: { authentication_token: authentication_token, state: 'verified', code: code }.to_json) }
-
-    it "call get_response with the appropriate parameters" do
-      Net::HTTP.stub('post_form').and_return(response)
-      Net::HTTP.should_receive('post_form').with(URI('http://api.phonify.io/v1/verify'), app: app, msisdn: phone, code: code, api_key: api_key)
-      expect(Phonify.verify(phone, code)[:authentication_token]).to eq(authentication_token)
+      it { expect(Phonify.find_phone(id)[:phone][:id]).to eq('10') }
     end
-  end  
 
-  describe '#authenticate' do
-    let(:response) { mock(code: '200', body: { authentication_token: authentication_token, state: 'subscribed' }.to_json) }
+    describe '#phones' do
+      let(:phones) { [{ id: id }, { id: id }] }
+      let(:response) { mock(code: '200', body: { phones: phones }.to_json) } 
 
-    it "call get_response with the appropriate parameters" do
-      Net::HTTP.stub('post_form').and_return(response)
-      Net::HTTP.should_receive('post_form').with(URI('http://api.phonify.io/v1/authenticate'), app: app, auth_token: authentication_token, api_key: api_key)
-      expect(Phonify.authenticate(authentication_token)[:authentication_token]).to eq(authentication_token)
+      before { Net::HTTP.should_receive(action).with(URI("https://api.phonify.io/v1/subscriptions?limit=#{limit}&offset=#{offset}&api_key=#{api_key}&app=#{app}")) }
+
+      it { expect(Phonify.phones(limit: limit, offset: offset)[:phones]).to match_array(phones) }
+    end 
+  end
+
+  describe 'Verify' do
+    let(:action) { 'post_form' }
+
+    describe '#verify' do
+      let(:response) { mock(code: '200', body: { authentication_token: authentication_token, state: 'verified', code: code }.to_json) }
+
+      before { Net::HTTP.should_receive(action).with(URI('https://api.phonify.io/v1/verify'), app: app, msisdn: phone, code: code, api_key: api_key) }
+
+      it { expect(Phonify.verify(phone, code)[:authentication_token]).to eq(authentication_token) }
+    end  
+
+    describe '#authenticate' do
+      let(:response) { mock(code: '200', body: { authentication_token: authentication_token, state: 'subscribed' }.to_json) }
+
+      before { Net::HTTP.should_receive(action).with(URI('https://api.phonify.io/v1/authenticate'), app: app, authentication_token: authentication_token, api_key: api_key) }
+
+      it { expect(Phonify.authenticate(authentication_token)[:authentication_token]).to eq(authentication_token) }
     end
   end
 end
