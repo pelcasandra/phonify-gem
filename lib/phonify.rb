@@ -3,9 +3,24 @@ require 'uri'
 require 'json'
 
 module Phonify
-  class << self
 
+  class Configuration
     attr_accessor :api_key, :app
+  end
+
+  class << self
+    attr_writer :configuration
+  end
+
+  def self.configuration
+    @configuration ||= Configuration.new
+  end
+
+  def self.configure
+    yield configuration
+  end
+
+  class << self
    
     def send_message(phone, body, options = {})
       post('v1/messages', { to: phone, body: body }.merge(options))
@@ -42,9 +57,9 @@ module Phonify
     private
 
     def request(path, params)
-      params[:api_key] = api_key
-      params[:app] = app
-      response = yield("https://api.phonify.io/#{path}")
+      params[:api_key] = Phonify.configuration.api_key
+      params[:app] = Phonify.configuration.app
+      response = yield("https://www.phonify.io/#{path}")
       JSON.parse(response.body, symbolize_names: true) if response
     end
 
