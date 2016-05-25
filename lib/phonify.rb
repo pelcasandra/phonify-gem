@@ -1,7 +1,6 @@
 require 'net/http'
 require 'uri'
 require 'json'
-require 'pry'
 
 module Phonify
   class << self
