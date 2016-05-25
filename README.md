@@ -61,7 +61,7 @@ Phonify.authenticate 'fclcw33ywA993tk5s1fs4n54d2ZjgA4r6xf3k4sA1cxw6926gckz2Ajxnz
 Single message
 
 ```ruby
-Phonify.find_message '+14560000000'
+Phonify.message '4g_oYIXRP6hRrUO0t9C'
 ```
 
 All messages
@@ -77,7 +77,7 @@ Returns array of messages
 Single phone
 
 ```ruby
-Phonify.find_phone '4g_oYIXRP6hRrUO0t9C'
+Phonify.phone '+14560000000'
 ```
 
 All phones

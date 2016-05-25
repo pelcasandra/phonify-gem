@@ -32,10 +32,10 @@ describe Phonify do
       it { expect(Phonify.send_message(phone, body)[:message][:id]).to eq('10') }
     end
 
-    describe '#find_message' do
+    describe '#message' do
       before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/messages/#{id}?api_key=#{api_key}&app=#{app}")) }
 
-      it { expect(Phonify.find_message(id)[:message][:id]).to eq('10') }
+      it { expect(Phonify.message(id)[:message][:id]).to eq('10') }
     end
 
     describe '#messages' do
@@ -51,10 +51,10 @@ describe Phonify do
   describe 'Phones' do
     let(:response) { mock(code: '200', body: { phone: { id: id } }.to_json) } 
 
-    describe '#find_phone' do
+    describe '#phone' do
       before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/subscriptions/#{id}?api_key=#{api_key}&app=#{app}")) }
 
-      it { expect(Phonify.find_phone(id)[:phone][:id]).to eq('10') }
+      it { expect(Phonify.phone(id)[:phone][:id]).to eq('10') }
     end
 
     describe '#phones' do

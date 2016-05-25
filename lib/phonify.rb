@@ -3,30 +3,13 @@ require 'uri'
 require 'json'
 
 module Phonify
-
-  class Configuration
-    attr_accessor :api_key, :app
-  end
-
-  class << self
-    attr_writer :configuration
-  end
-
-  def self.configuration
-    @configuration ||= Configuration.new
-  end
-
-  def self.configure
-    yield configuration
-  end
-
   class << self
    
     def send_message(phone, body, options = {})
       post('v1/messages', { to: phone, body: body }.merge(options))
     end
 
-    def find_message(id)
+    def message(id)
       get("v1/messages/#{id}")
     end
 
@@ -34,7 +17,7 @@ module Phonify
       get('v1/messages', options)
     end
 
-    def find_phone(id)
+    def phone(id)
       get("v1/subscriptions/#{id}")
     end
 
@@ -71,4 +54,20 @@ module Phonify
       request(path, params) { |url| Net::HTTP.get_response URI("#{url}?#{URI.encode_www_form(params.to_a)}") }
     end
   end
+
+  class Configuration
+    attr_accessor :api_key, :app
+  end
+
+  class << self
+    attr_writer :configuration
+  end
+
+  def self.configuration
+    @configuration ||= Configuration.new
+  end
+
+  def self.configure
+    yield configuration
+  end  
 end
