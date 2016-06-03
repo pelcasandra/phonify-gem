@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Phonify do
+  let(:msisdn) { '+14560000000' }
   let(:app) { 'app' }
   let(:phone) { 'phone' }
   let(:api_key) { 'api_key' }
@@ -52,9 +53,9 @@ describe Phonify do
     let(:response) { mock(code: '200', body: { phone: { id: id } }.to_json) } 
 
     describe '#phone' do
-      before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/subscriptions/#{id}?api_key=#{api_key}&app=#{app}")) }
+      before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/subscriptions/#{msisdn}?api_key=#{api_key}&app=#{app}")) }
 
-      it { expect(Phonify.phone(id)[:phone][:id]).to eq('10') }
+      it { expect(Phonify.phone(msisdn)[:phone][:id]).to eq('10') }
     end
 
     describe '#phones' do
@@ -64,7 +65,16 @@ describe Phonify do
       before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/subscriptions?limit=#{limit}&offset=#{offset}&api_key=#{api_key}&app=#{app}")) }
 
       it { expect(Phonify.phones(limit: limit, offset: offset)[:phones]).to match_array(phones) }
-    end 
+    end
+
+    describe '#unsubscribe' do
+      let(:action) { 'post_form' }
+      let(:response) { mock(code: '200', body: { result: 'OK' }.to_json) } 
+
+      before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/subscriptions/#{msisdn}/unsubscribe"), app: app, api_key: api_key) }
+
+      it { expect(Phonify.unsubscribe(msisdn)[:result]).to eq('OK') }
+    end
   end
 
   describe 'Verify' do

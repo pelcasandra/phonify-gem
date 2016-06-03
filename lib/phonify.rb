@@ -34,7 +34,7 @@ module Phonify
     end
 
     def unsubscribe(id)
-      post("v1/subscriptions/unsubscribe")
+      post("v1/subscriptions/#{id}/unsubscribe")
     end
     
     private
