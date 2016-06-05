@@ -5,8 +5,8 @@ require 'json'
 module Phonify
   class << self
    
-    def send_message(phone, body, options = {})
-      post('v1/messages', { to: phone, body: body }.merge(options))
+    def send_message(msisdn, body, options = {})
+      post('v1/messages', { to: msisdn, body: body }.merge(options))
     end
 
     def message(id)
@@ -17,24 +17,24 @@ module Phonify
       get('v1/messages', options)
     end
 
-    def phone(id)
-      get("v1/subscriptions/#{id}")
+    def phone(msisdn)
+      get("v1/subscriptions/#{msisdn}")
     end
 
     def phones(options = {})
       get('v1/subscriptions', options)
     end
 
-    def verify(phone, code = nil)
-      post('v1/verify', msisdn: phone, code: code)
+    def verify(msisdn, code = nil)
+      post('v1/verify', msisdn: msisdn, code: code)
     end
 
     def authenticate(authentication_token)
       post('v1/authenticate', authentication_token: authentication_token)
     end
 
-    def unsubscribe(id)
-      post("v1/subscriptions/#{id}/unsubscribe")
+    def unsubscribe(msisdn)
+      post("v1/subscriptions/#{msisdn}/unsubscribe")
     end
     
     private
