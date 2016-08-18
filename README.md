@@ -74,19 +74,19 @@ Returns array of messages
 
 ### Find subscriptions
 
-Single phone
+Single subscription
 
 ```ruby
 Phonify.subscription 'cVfZ4ehJ3g6c_1nvs47C'
 ```
 
-All phones
+All subscriptions
 
 ```ruby
-Phonify.phones
+Phonify.subscriptions
 ```
 
-Returns array of phones.
+Returns array of subscriptions.
 
 ### Errors
 
