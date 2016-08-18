@@ -72,21 +72,6 @@ Phonify.messages
 
 Returns array of messages
 
-### Find subscriptions
-
-Single subscription
-
-```ruby
-Phonify.subscription 'cVfZ4ehJ3g6c_1nvs47C'
-```
-
-All subscriptions
-
-```ruby
-Phonify.subscriptions
-```
-
-Returns array of subscriptions.
 
 ### Errors
 
