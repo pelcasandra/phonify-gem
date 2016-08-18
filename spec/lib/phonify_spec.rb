@@ -30,7 +30,7 @@ describe Phonify do
 
       before { Net::HTTP.should_receive(action).with(URI('https://www.phonify.io/v1/messages'), app: app, to: phone, body: body, api_key: api_key) }
 
-      it { expect(Phonify.send_message(phone, body)[:message][:id]).to eq('10') }
+      it { expect(Phonify.send_message(phone, body)[:message][:id]).to eq(id) }
     end
 
     describe '#message' do
@@ -49,31 +49,31 @@ describe Phonify do
     end
   end
 
-  describe 'Phones' do
-    let(:response) { mock(code: '200', body: { phone: { id: id } }.to_json) } 
+  describe 'Subscriptions' do
+    let(:response) { mock(code: '200', body: { subscription: { id: id } }.to_json) } 
 
-    describe '#phone' do
-      before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/phones/#{msisdn}?api_key=#{api_key}&app=#{app}")) }
+    describe '#subscription' do
+      before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/subscriptions/#{id}?api_key=#{api_key}&app=#{app}")) }
 
-      it { expect(Phonify.phone(msisdn)[:phone][:id]).to eq('10') }
+      it { expect(Phonify.subscription(id)[:subscription][:id]).to eq(id) }
     end
 
-    describe '#phones' do
-      let(:phones) { [{ id: id }, { id: id }] }
-      let(:response) { mock(code: '200', body: { phones: phones }.to_json) } 
+    describe '#subscriptions' do
+      let(:subscriptions) { [{ id: id }, { id: id }] }
+      let(:response) { mock(code: '200', body: { subscriptions: subscriptions }.to_json) } 
 
-      before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/phones?limit=#{limit}&offset=#{offset}&api_key=#{api_key}&app=#{app}")) }
+      before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/subscriptions?limit=#{limit}&offset=#{offset}&api_key=#{api_key}&app=#{app}")) }
 
-      it { expect(Phonify.phones(limit: limit, offset: offset)[:phones]).to match_array(phones) }
+      it { expect(Phonify.subscriptions(limit: limit, offset: offset)[:subscriptions]).to match_array(subscriptions) }
     end
 
     describe '#unsubscribe' do
       let(:action) { 'post_form' }
       let(:response) { mock(code: '200', body: { result: 'OK' }.to_json) } 
 
-      before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/phones/#{msisdn}/unsubscribe"), app: app, api_key: api_key) }
+      before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/subscriptions/#{id}/unsubscribe"), app: app, api_key: api_key) }
 
-      it { expect(Phonify.unsubscribe(msisdn)[:result]).to eq('OK') }
+      it { expect(Phonify.unsubscribe(id)[:result]).to eq('OK') }
     end
   end
 

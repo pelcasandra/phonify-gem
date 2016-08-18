@@ -17,13 +17,13 @@ module Phonify
       get('v1/messages', options)
     end
 
-    def phone(msisdn)
-      get("v1/phones/#{msisdn}")
+    def subscription(id)
+      get("v1/subscriptions/#{id}")
     end
 
-    def phones(options = {})
-      get('v1/phones', options)
-    end
+    def subscriptions(options = {})
+      get('v1/subscriptions', options)
+    end    
 
     def verify(msisdn, code = nil)
       post('v1/verify', msisdn: msisdn, code: code)
@@ -34,7 +34,7 @@ module Phonify
     end
 
     def unsubscribe(msisdn)
-      post("v1/phones/#{msisdn}/unsubscribe")
+      post("v1/subscriptions/#{msisdn}/unsubscribe")
     end
     
     private

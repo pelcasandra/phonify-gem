@@ -72,12 +72,12 @@ Phonify.messages
 
 Returns array of messages
 
-### Find phones
+### Find subscriptions
 
 Single phone
 
 ```ruby
-Phonify.phone '+14560000000'
+Phonify.subscription 'cVfZ4ehJ3g6c_1nvs47C'
 ```
 
 All phones
