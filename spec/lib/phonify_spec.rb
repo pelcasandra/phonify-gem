@@ -49,6 +49,25 @@ describe Phonify do
     end
   end
 
+  describe 'Phones', focus: true do
+    let(:response) { mock(code: '200', body: { phone: { id: id } }.to_json) } 
+
+    describe '#phone' do
+      before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/phones/#{msisdn}?api_key=#{api_key}&app=#{app}")) }
+
+      it { expect(Phonify.phone(msisdn)[:phone][:id]).to eq('10') }
+    end
+
+    describe '#phones' do
+      let(:phones) { [{ id: id }, { id: id }] }
+      let(:response) { mock(code: '200', body: { phones: phones }.to_json) } 
+
+      before { Net::HTTP.should_receive(action).with(URI("https://www.phonify.io/v1/phones?limit=#{limit}&offset=#{offset}&api_key=#{api_key}&app=#{app}")) }
+
+      it { expect(Phonify.phones(limit: limit, offset: offset)[:phones]).to match_array(phones) }
+    end
+  end  
+
   describe 'Subscriptions' do
     let(:response) { mock(code: '200', body: { subscription: { id: id } }.to_json) } 
 

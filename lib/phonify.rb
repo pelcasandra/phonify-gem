@@ -17,6 +17,14 @@ module Phonify
       get('v1/messages', options)
     end
 
+    def phone(msisdn)
+      get("v1/phones/#{msisdn}")
+    end
+
+    def phones(options = {})
+      get('v1/phones', options)
+    end
+
     def subscription(id)
       get("v1/subscriptions/#{id}")
     end
