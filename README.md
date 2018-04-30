@@ -36,26 +36,6 @@ end
 Phonify.send_message '+14560000000', 'As above, so below.'
 ```
 
-### Verify
-
-Send verification code
-
-```ruby
-Phonify.verify '+14560000000'
-```
-
-Verify
-
-```ruby
-Phonify.verify '+14560000000', '1234'
-```
-
-Authenticate
-
-```ruby
-Phonify.authenticate 'fclcw33ywA993tk5s1fs4n54d2ZjgA4r6xf3k4sA1cxw6926gckz2Ajxnz6n79Astl4fqbsnms4Adm1'
-```
-
 ### Find messages
 
 Single message
@@ -71,7 +51,6 @@ Phonify.messages
 ```
 
 Returns array of messages
-
 
 ### Errors
 

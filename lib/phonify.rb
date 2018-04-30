@@ -33,14 +33,6 @@ module Phonify
       get('v1/subscriptions', options)
     end    
 
-    def verify(msisdn, code = nil)
-      post('v1/verify', msisdn: msisdn, code: code)
-    end
-
-    def authenticate(authentication_token)
-      post('v1/authenticate', authentication_token: authentication_token)
-    end
-
     def unsubscribe(msisdn)
       post("v1/subscriptions/#{msisdn}/unsubscribe")
     end

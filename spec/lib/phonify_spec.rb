@@ -49,7 +49,7 @@ describe Phonify do
     end
   end
 
-  describe 'Phones', focus: true do
+  describe 'Phones' do
     let(:response) { mock(code: '200', body: { phone: { id: id } }.to_json) } 
 
     describe '#phone' do
