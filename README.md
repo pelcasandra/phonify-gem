@@ -26,7 +26,6 @@ Configure your api and app tokens:
 # config/initializers/phonify.rb
 Phonify.configure do |config|
   config.api_key = 'TOKEN'
-  config.app = 'TOKEN'
 end
 ```
 
