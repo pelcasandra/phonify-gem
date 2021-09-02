@@ -9,7 +9,7 @@ More info on [phonify.io/help](http://www.phonify.io/help).
 ### Add gem to your Gemfile
 
 ```ruby
-gem 'phonify', github: 'pelcasandra/github'
+gem 'phonify', github: 'pelcasandra/phonify-gem'
 ```
 
 ### Install the gem
@@ -20,12 +20,13 @@ bundle install
 
 ## Usage
 
-Configure your api and app tokens:
+Configure your api and business tokens:
 
 ```ruby    
 # config/initializers/phonify.rb
 Phonify.configure do |config|
   config.api_key = 'TOKEN'
+  config.business = 'BUSINESS TOKEN'
 end
 ```
 

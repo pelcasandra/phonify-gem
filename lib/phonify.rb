@@ -44,9 +44,9 @@ module Phonify
 
     def request(path, params)
       params[:api_key] = Phonify.configuration.api_key
-      params[:app] = Phonify.configuration.app
+      params[:business] = Phonify.configuration.business
       warn "Warning: Phonify: API key was not supplied. Check #{REPOSITORY_URL} for help." if Phonify.configuration.api_key.nil?
-      warn "Warning: Phonify: App name was not supplied. Check #{REPOSITORY_URL} for help." if Phonify.configuration.app.nil?
+      warn "Warning: Phonify: Business name was not supplied. Check #{REPOSITORY_URL} for help." if Phonify.configuration.business.nil?
       response = yield("https://www.phonify.io/#{path}") if block_given?
       begin
         JSON.parse(response.body, symbolize_names: true)
@@ -70,7 +70,7 @@ module Phonify
   end
 
   class Configuration
-    attr_accessor :api_key, :app
+    attr_accessor :api_key, :business
   end
 
   class << self
