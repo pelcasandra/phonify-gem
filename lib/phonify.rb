@@ -46,7 +46,7 @@ module Phonify
       params[:api_key] = Phonify.configuration.api_key
       params[:business] = Phonify.configuration.business
       warn "Warning: Phonify: API key was not supplied. Check #{REPOSITORY_URL} for help." if Phonify.configuration.api_key.nil?
-      warn "Warning: Phonify: Business name was not supplied. Check #{REPOSITORY_URL} for help." if Phonify.configuration.business.nil?
+      # warn "Warning: Phonify: Business name was not supplied. Check #{REPOSITORY_URL} for help." if Phonify.configuration.business.nil?
       response = yield("https://www.phonify.io/#{path}") if block_given?
       begin
         JSON.parse(response.body, symbolize_names: true)
